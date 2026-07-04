@@ -35,35 +35,15 @@ dev = [
 where = ["."]
 include = ["apps*"]
 
-# ============================================================================
-# Code Formatting - Black
-# ============================================================================
-# Enforces consistent code style across the project.
-# Line length of 88 is the Black default for better readability.
-# ============================================================================
 [tool.black]
 line-length = 88
 target-version = ['py310', 'py311', 'py312', 'py313']
 
-# ============================================================================
-# Linting - Ruff
-# ============================================================================
-# Fast Python linter that replaces Flake8, isort, and more.
-# Selected rules cover errors, warnings, imports, naming, and best practices.
-# E501 (line too long) is ignored since Black handles formatting.
-# B008 (do not perform function calls in argument defaults) is ignored.
-# ============================================================================
 [tool.ruff]
 line-length = 88
 select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "SIM", "RET"]
 ignore = ["E501", "B008"]
 
-# ============================================================================
-# Type Checking - MyPy
-# ============================================================================
-# Static type checking for Python code.
-# django_settings_module points to the Django settings for plugin integration.
-# ============================================================================
 [tool.mypy]
 python_version = "3.10"
 django_settings_module = "task_manager.settings"
@@ -85,4 +65,4 @@ DJANGO_SETTINGS_MODULE = "task_manager.settings"
 python_files = "tests.py test_*.py *_tests.py"
 addopts = "-v --cov=apps --cov-report=term --cov-report=xml"
 testpaths = ["apps"]
-pythonpath = [".", "src"]  # Adds both project root and src/ to sys.path
+pythonpath = [".", "src"]

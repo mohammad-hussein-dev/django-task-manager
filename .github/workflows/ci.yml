@@ -50,6 +50,7 @@ jobs:
       # ========================================================================
       # Upgrades pip and installs the project in editable mode with dev extras.
       # -e .[dev] installs both runtime and development dependencies.
+      # This is the CRITICAL step that makes 'apps' module discoverable.
       # ========================================================================
       - name: Install dependencies
         run: |
@@ -57,24 +58,7 @@ jobs:
           pip install -e .[dev]
 
       # ========================================================================
-      # Step 4: Create conftest.py for Path Resolution
-      # ========================================================================
-      # Generates a conftest.py file that adds the project root to sys.path.
-      # This is a robust fallback to ensure the 'apps' module is always found.
-      # ========================================================================
-      - name: Create conftest.py
-        run: |
-          cat > conftest.py << 'PYTEST'
-          import sys
-          from pathlib import Path
-          # Add project root to Python's module search path
-          project_root = Path(__file__).parent
-          if str(project_root) not in sys.path:
-              sys.path.insert(0, str(project_root))
-          PYTEST
-
-      # ========================================================================
-      # Step 5: Run Database Migrations
+      # Step 4: Run Database Migrations
       # ========================================================================
       # Applies Django migrations in the test database.
       # This ensures the database schema is up to date before running tests.
@@ -85,20 +69,17 @@ jobs:
           python manage.py migrate
 
       # ========================================================================
-      # Step 6: Run Tests with Coverage
+      # Step 5: Run Tests with Coverage
       # ========================================================================
       # Executes the test suite and generates coverage reports.
-      # PYTHONPATH is set to the workspace root to resolve the 'apps' module.
       # Coverage is output in both terminal (human-readable) and XML (for Codecov).
       # ========================================================================
       - name: Run tests with coverage
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: |
           pytest --cov=apps --cov-report=term --cov-report=xml
 
       # ========================================================================
-      # Step 7: Upload Coverage to Codecov
+      # Step 6: Upload Coverage to Codecov
       # ========================================================================
       # Sends the coverage report to Codecov for tracking and badge generation.
       # fail_ci_if_error: false prevents the workflow from failing if upload fails.
