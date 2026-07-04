@@ -22,13 +22,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # ========================================================================
-      # IMPORTANT: Install dependencies with editable mode
-      # ========================================================================
-      # 'pip install -e .' installs the project in editable mode.
-      # This is CRITICAL because it makes the 'apps' module discoverable
-      # as a proper Python package.
-      # ========================================================================
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -38,17 +31,10 @@ jobs:
         run: |
           python manage.py migrate
 
-      # ========================================================================
-      # IMPORTANT: Set PYTHONPATH and run tests
-      # ========================================================================
-      # Setting PYTHONPATH to the workspace root ensures that Python can find
-      # the 'src/' directory and all modules within it.
-      # ========================================================================
       - name: Run tests with coverage
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: |
-          pytest
+          coverage run manage.py test
+          coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
