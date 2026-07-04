@@ -25,12 +25,9 @@ dev = [
     "pre-commit>=4.2",
 ]
 
-# ============================================================================
-# Package Discovery - Critical for pip install -e .
-# ============================================================================
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src/apps*", "src/task_manager*"]
+include = ["src*"]
 
 [tool.black]
 line-length = 88
@@ -49,12 +46,9 @@ ignore_missing_imports = true
 warn_return_any = true
 warn_unused_configs = true
 
-# ============================================================================
-# Pytest Configuration - Critical for CI
-# ============================================================================
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "task_manager.settings"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "-v --cov=src/apps --cov-report=term --cov-report=xml"
+addopts = "-v --cov=apps --cov-report=term --cov-report=xml"
 testpaths = ["src/apps"]
 pythonpath = ["."]
