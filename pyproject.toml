@@ -49,6 +49,6 @@ warn_unused_configs = true
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "task_manager.settings"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "-v --cov=src/apps --cov-report=term --cov-report=xml"
+addopts = "-v --cov=apps --cov-report=term --cov-report=xml"
 testpaths = ["src/apps"]
 pythonpath = [".", "src"]
