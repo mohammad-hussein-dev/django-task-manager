@@ -1,0 +1,571 @@
+/* ==========================================================================
+   Task Manager — Custom Styles
+   ========================================================================== */
+
+/* ==========================================================================
+   TABLE OF CONTENTS
+   ==========================================================================
+   1.  CSS Variables (Light & Dark Mode)
+   2.  Global Reset & Base
+   3.  Navigation Bar
+   4.  Cards & Containers
+   5.  Dashboard Statistics Cards (A3)
+   6.  Task List & Due‑Date Colour Coding (A4)
+   7.  Badges & Status Indicators
+   8.  Buttons & Actions
+   9.  Forms & Inputs
+   10. Footer
+   11. Alerts & Messages
+   12. Pagination
+   13. Responsive Adjustments
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1.  CSS VARIABLES
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1.1  Light Mode (Default)
+   -------------------------------------------------------------------------- */
+:root {
+    /* Backgrounds */
+    --bg-body: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-navbar: #0d6efd;
+    --bg-footer: #ffffff;
+    --bg-input: #ffffff;
+    --bg-hover: #f1f5f9;
+
+    /* Text colors */
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --text-white: #ffffff;
+
+    /* Borders */
+    --border-color: #e2e8f0;
+
+    /* Shadows */
+    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
+
+    /* Transitions */
+    --transition-speed: 0.3s;
+
+    /* Dashboard card colours (used for both modes) */
+    --dashboard-primary: #0d6efd;
+    --dashboard-success: #198754;
+    --dashboard-warning: #ffc107;
+    --dashboard-danger: #dc3545;
+}
+
+/* --------------------------------------------------------------------------
+   1.2  Dark Mode Overrides
+   -------------------------------------------------------------------------- */
+[data-bs-theme="dark"] {
+    /* Backgrounds */
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --bg-navbar: #0b1120;
+    --bg-footer: #1e293b;
+    --bg-input: #334155;
+    --bg-hover: #334155;
+
+    /* Text colors */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-white: #ffffff;
+
+    /* Borders */
+    --border-color: #334155;
+
+    /* Shadows — deeper in dark mode for visibility */
+    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+
+/* ==========================================================================
+   2.  GLOBAL RESET & BASE
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background-color var(--transition-speed) ease,
+                color var(--transition-speed) ease;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+
+/* ==========================================================================
+   3.  NAVIGATION BAR
+   ========================================================================== */
+
+.navbar {
+    background-color: var(--bg-navbar) !important;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.navbar-brand i {
+    margin-right: 8px;
+}
+
+.navbar .navbar-text {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Dark mode toggle — consistent with Bootstrap's form-switch */
+.form-switch .form-check-input {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%28255,255,255,0.5%29'/%3e%3c/svg%3e");
+    transition: background-position 0.15s ease-in-out;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
+}
+
+
+/* ==========================================================================
+   4.  CARDS & CONTAINERS
+   ========================================================================== */
+
+.card {
+    border: none;
+    border-radius: 12px;
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    transition: background-color var(--transition-speed) ease,
+                box-shadow var(--transition-speed) ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.25rem;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color var(--transition-speed) ease,
+                border-color var(--transition-speed) ease;
+}
+
+
+/* ==========================================================================
+   5.  DASHBOARD STATISTICS CARDS (A3)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Why we use explicit card classes instead of Bootstrap's bg-* utilities:
+   - Ensures consistent styling in both light and dark modes.
+   - Allows fine‑grained control over hover effects and transitions.
+   - Makes it easier to customise colours without touching Bootstrap's
+     core variables.
+   -------------------------------------------------------------------------- */
+
+.dashboard-card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: default;
+}
+
+/* Subtle lift on hover — provides tactile feedback without being jarring */
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Icon container — semi‑transparent background for depth */
+.dashboard-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+/* Number styling — large, bold, and legible */
+.dashboard-number {
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+/* Label — subtle, uppercase, with tracking for readability */
+.dashboard-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+/* Helper for dark text on light backgrounds (e.g., warning card) */
+.text-dark-50 {
+    color: rgba(0, 0, 0, 0.6) !important;
+}
+
+
+/* ==========================================================================
+   6.  TASK LIST & DUE‑DATE COLOUR CODING (A4)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Base list‑group‑item styles — already defined above, but we extend them
+   with border‑left accent colours to indicate urgency.
+   -------------------------------------------------------------------------- */
+
+.list-group-item {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px !important;
+    margin-bottom: 6px;
+    transition: background-color var(--transition-speed) ease,
+                color var(--transition-speed) ease,
+                border-color var(--transition-speed) ease,
+                transform 0.15s ease;
+}
+
+.list-group-item:hover {
+    background-color: var(--bg-hover);
+    transform: translateX(4px);
+}
+
+.list-group-item a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.list-group-item .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Due‑date colour coding — border‑left accent acts as a visual priority
+   indicator without overwhelming the user with background changes.
+
+   Why border‑left instead of background:
+   - Preserves readability of text (no contrast issues).
+   - Works consistently in both light and dark modes.
+   - Subtle enough for everyday use but noticeable at a glance.
+   -------------------------------------------------------------------------- */
+
+/* Overdue — red accent (critical) */
+.list-group-item-due-overdue {
+    border-left: 5px solid var(--dashboard-danger) !important;
+    background-color: rgba(220, 53, 69, 0.04);
+}
+.list-group-item-due-overdue:hover {
+    background-color: rgba(220, 53, 69, 0.08);
+}
+
+/* Due soon (within 3 days) — yellow accent (warning) */
+.list-group-item-due-soon {
+    border-left: 5px solid var(--dashboard-warning) !important;
+    background-color: rgba(255, 193, 7, 0.04);
+}
+.list-group-item-due-soon:hover {
+    background-color: rgba(255, 193, 7, 0.08);
+}
+
+/* Due far (> 3 days) — green accent (on track) */
+.list-group-item-due-far {
+    border-left: 5px solid var(--dashboard-success) !important;
+    background-color: rgba(25, 135, 84, 0.04);
+}
+.list-group-item-due-far:hover {
+    background-color: rgba(25, 135, 84, 0.08);
+}
+
+/* Small status indicator badges (shown next to due date) */
+.badge.bg-danger.rounded-pill {
+    font-size: 0.7rem;
+    padding: 0 0.5rem;
+    line-height: 1.4;
+}
+.badge.bg-warning.rounded-pill {
+    font-size: 0.7rem;
+    padding: 0 0.5rem;
+    line-height: 1.4;
+}
+.badge.bg-success.rounded-pill {
+    font-size: 0.7rem;
+    padding: 0 0.5rem;
+    line-height: 1.4;
+}
+
+
+/* ==========================================================================
+   7.  BADGES & STATUS INDICATORS
+   ========================================================================== */
+
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.75em;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+
+/* ==========================================================================
+   8.  BUTTONS & ACTIONS
+   ========================================================================== */
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.15s ease;
+}
+
+/* Primary — used for main actions (filter, create, etc.) */
+.btn-primary {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+.btn-primary:hover {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+/* Success — used for "New Task" and "Completed" actions */
+.btn-success {
+    background-color: #16a34a;
+    border-color: #16a34a;
+}
+.btn-success:hover {
+    background-color: #15803d;
+    border-color: #15803d;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+}
+
+/* Secondary — used for Reset, Cancel, and back actions */
+.btn-secondary {
+    background-color: var(--bg-hover);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+.btn-secondary:hover {
+    background-color: var(--border-color);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+
+/* ==========================================================================
+   9.  FORMS & INPUTS
+   ========================================================================== */
+
+.form-control,
+.form-select {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    transition: background-color var(--transition-speed) ease,
+                color var(--transition-speed) ease,
+                border-color var(--transition-speed) ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-label {
+    color: var(--text-primary);
+}
+
+
+/* ==========================================================================
+   10.  FOOTER
+   ========================================================================== */
+
+.footer {
+    flex-shrink: 0;
+    background-color: var(--bg-footer);
+    border-top: 1px solid var(--border-color);
+    padding: 2rem 0 1.5rem;
+    margin-top: 3rem;
+    transition: background-color var(--transition-speed) ease,
+                border-color var(--transition-speed) ease;
+}
+
+.footer .footer-brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.footer .footer-brand i {
+    color: #2563eb;
+    margin-right: 6px;
+}
+
+.footer .footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+}
+.footer .footer-links a:hover {
+    color: #2563eb;
+}
+
+.footer .footer-social a {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    transition: color 0.15s ease, transform 0.15s ease;
+    display: inline-block;
+}
+.footer .footer-social a:hover {
+    color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.footer .footer-divider {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 1rem 0;
+}
+
+.footer .footer-copy {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+.footer .footer-copy a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+.footer .footer-copy a:hover {
+    text-decoration: underline;
+}
+
+
+/* ==========================================================================
+   11.  ALERTS & MESSAGES
+   ========================================================================== */
+
+.alert {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* ==========================================================================
+   12.  PAGINATION
+   ========================================================================== */
+
+/* Pagination links inherit the theme colours and maintain consistency */
+.pagination .page-link {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+    transition: background-color var(--transition-speed) ease,
+                color var(--transition-speed) ease,
+                border-color var(--transition-speed) ease;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--bg-hover);
+    color: #2563eb;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+
+/* ==========================================================================
+   13.  RESPONSIVE ADJUSTMENTS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .footer .footer-links {
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    .footer .footer-social {
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    .footer .footer-brand {
+        text-align: center;
+        display: block;
+    }
+}
+
+/* Small screens (phones, < 576px) */
+@media (max-width: 576px) {
+    /* Dashboard cards — more compact on mobile */
+    .dashboard-card .card-body {
+        padding: 0.8rem 1rem;
+    }
+
+    .dashboard-icon {
+        width: 40px;
+        height: 40px;
+    }
+    .dashboard-icon i {
+        font-size: 1.5rem !important;
+    }
+
+    .dashboard-number {
+        font-size: 1.5rem !important;
+    }
+
+    /* List items — keep them readable but not too wide */
+    .list-group-item {
+        padding: 0.75rem 1rem;
+    }
+
+    /* Small badge adjustments */
+    .badge.rounded-pill {
+        font-size: 0.65rem;
+    }
+}

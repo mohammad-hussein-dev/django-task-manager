@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% comment %}
+===========================================================================
+Task Form Template (Create & Update)
+===========================================================================
+
+This template is used for both creating new tasks and updating existing ones.
+It uses Django's ModelForm (TaskForm) to render all fields automatically
+with built-in validation and error handling.
+
+The template dynamically adapts based on the context:
+- Create mode (no task instance): Displays an empty form with "Create Task" title.
+- Update mode (task instance provided): Displays the form pre-filled with the
+  task's data and "Update Task" title.
+
+Why we use {{ form }} instead of manual fields:
+    - Automatic field rendering with proper HTML attributes
+    - Built-in error display without extra code
+    - Consistency with the ModelForm backend
+    - Reduced template duplication
+    - Easier to maintain when fields change
+===========================================================================
+{% endcomment %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-{% if task %}edit{% else %}plus{% endif %}"></i>
+                    {{ title }}
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {# ============================================================
+                       Render all form fields with Bootstrap styling
+                       Each field gets: label, input/select/textarea, help text,
+                       and error messages (if any)
+                       ============================================================ #}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {# Field label #}
+                            <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+
+                            {# The field itself — with Bootstrap classes applied #}
+                            {{ field }}
+
+                            {# Help text (if defined in the form) #}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+
+                            {# Field errors — displayed as Bootstrap alerts #}
+                            {% if field.errors %}
+                                <div class="alert alert-danger mt-1 mb-0 py-1">
+                                    {% for error in field.errors %}
+                                        <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    {# Non-field errors (e.g., form-level validation) #}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# ============================================================
+                       Form actions: Cancel & Submit
+                       ============================================================ #}
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> {% translate "Cancel" %}
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i>
+                            {% if task %}{% translate "Update Task" %}{% else %}{% translate "Create Task" %}{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

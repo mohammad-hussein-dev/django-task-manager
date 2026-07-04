@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% comment %}
+===========================================================================
+Task Delete Confirmation Template
+===========================================================================
+
+This template displays a confirmation page before permanently deleting
+a task. It uses a red-themed card with warning styling to emphasize
+the destructive nature of the action.
+
+The page provides:
+- A clear, unambiguous warning message.
+- The task title displayed prominently for user confirmation.
+- A reminder that the action is irreversible.
+- Two action buttons: Cancel (returns to task detail) and Delete (performs deletion).
+
+All user-facing strings are internationalized using the translate tag,
+supporting both English and Persian languages.
+{% endcomment %}
+
+{% block title %}{% translate "Delete Task" %}{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {% translate "Delete Task" %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="lead">
+                    {% translate "Are you sure you want to delete the task" %}
+                    <strong>"{{ task.title }}"</strong>?
+                </p>
+
+                <p class="text-muted">
+                    {% translate "This action cannot be undone." %}
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'tasks:task_detail' task.pk %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> {% translate "Cancel" %}
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> {% translate "Yes, Delete" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

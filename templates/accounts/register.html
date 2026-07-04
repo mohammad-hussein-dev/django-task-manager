@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% comment %}
+===========================================================================
+Registration Template
+===========================================================================
+
+This template displays the user registration page. It provides a clean,
+card-based form for creating a new user account.
+
+Features:
+- CSRF protection for secure form submission.
+- Renders the registration form using Django's built-in UserCreationForm.
+- Displays a "Login" link for users who already have an account.
+- Uses a responsive layout with centered design (col-md-6 col-lg-4).
+
+The form is processed by a custom registration view, which automatically
+logs in the user after successful registration and redirects to the task list.
+{% endcomment %}
+
+{% block title %}{% translate "Register" %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus"></i>
+                    {% translate "Register" %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-user-plus"></i>
+                        {% translate "Register" %}
+                    </button>
+                </form>
+
+                <hr>
+                <p class="text-center">
+                    {% translate "Already have an account?" %}
+                    <a href="{% url 'accounts:login' %}">
+                        {% translate "Login" %}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

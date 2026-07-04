@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% comment %}
+===========================================================================
+Login Template
+===========================================================================
+
+This template displays the user login page. It provides a simple,
+card-based form for user authentication.
+
+Features:
+- CSRF protection for secure form submission.
+- Renders the login form using Django's built-in form rendering ({{ form.as_p }}).
+- Displays a "Register" link for users without an account.
+- Uses a responsive layout with centered design (col-md-6 col-lg-4).
+
+The form is processed by Django's built-in LoginView,
+which handles authentication, session creation, and redirect logic.
+{% endcomment %}
+
+{# Page title block — overrides the base template's title #}
+{% block title %}{% translate "Login" %}{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        {# Login Card: Uses a primary-colored header and a clean form layout. #}
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-sign-in-alt"></i>
+                    {% translate "Login" %}
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-sign-in-alt"></i>
+                        {% translate "Login" %}
+                    </button>
+                </form>
+
+                <hr>
+                <p class="text-center">
+                    {% translate "Don't have an account?" %}
+                    <a href="{% url 'accounts:register' %}">
+                        {% translate "Register" %}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

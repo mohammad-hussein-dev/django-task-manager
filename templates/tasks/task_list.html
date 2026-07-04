@@ -1,0 +1,368 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% translate "Task List" %}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+
+        <!-- ============================================================
+             PAGE HEADER — title, task count badge, and create button
+             ============================================================ -->
+        <h1 class="mb-4">
+            <i class="fas fa-list"></i> {% translate "My Tasks" %}
+            {# Show total task count as a badge next to the title for quick glance #}
+            <span class="badge bg-secondary ms-2">{{ total_tasks }}</span>
+            <a href="{% url 'tasks:task_create' %}" class="btn btn-success float-end">
+                <i class="fas fa-plus"></i> {% translate "New Task" %}
+            </a>
+        </h1>
+
+        <!-- ============================================================
+             DASHBOARD STATISTICS CARDS (A3)
+             Four metric cards: total, completed, in-progress, overdue.
+             These give users an at-a-glance view of their productivity.
+             ============================================================ -->
+        <div class="row g-3 mb-4">
+            {# Total tasks card — blue accent #}
+            <div class="col-sm-6 col-lg-3">
+                <div class="card dashboard-card bg-primary text-white h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="dashboard-icon me-3"><i class="fas fa-tasks fa-2x"></i></div>
+                        <div>
+                            <div class="dashboard-number fs-2 fw-bold">{{ total_tasks }}</div>
+                            <div class="dashboard-label small text-white-50">{% translate "Total Tasks" %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Completed tasks card — green accent #}
+            <div class="col-sm-6 col-lg-3">
+                <div class="card dashboard-card bg-success text-white h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="dashboard-icon me-3"><i class="fas fa-check-circle fa-2x"></i></div>
+                        <div>
+                            <div class="dashboard-number fs-2 fw-bold">{{ completed_tasks }}</div>
+                            <div class="dashboard-label small text-white-50">{% translate "Completed" %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# In-progress tasks card — yellow accent #}
+            <div class="col-sm-6 col-lg-3">
+                <div class="card dashboard-card bg-warning text-dark h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="dashboard-icon me-3"><i class="fas fa-spinner fa-2x"></i></div>
+                        <div>
+                            <div class="dashboard-number fs-2 fw-bold">{{ in_progress_tasks }}</div>
+                            <div class="dashboard-label small text-dark-50">{% translate "In Progress" %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Overdue tasks card — red accent (critical metric) #}
+            <div class="col-sm-6 col-lg-3">
+                <div class="card dashboard-card bg-danger text-white h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="dashboard-icon me-3"><i class="fas fa-exclamation-triangle fa-2x"></i></div>
+                        <div>
+                            <div class="dashboard-number fs-2 fw-bold">{{ overdue_tasks }}</div>
+                            <div class="dashboard-label small text-white-50">{% translate "Overdue" %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             ADVANCED FILTER FORM
+             Status, priority, date range, and search — all via GET
+             to preserve filter state across pagination.
+             ============================================================ -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    {# Search field — case-insensitive partial match on title #}
+                    <div class="col-md-3">
+                        <input type="text" name="search" class="form-control"
+                               placeholder="{% translate 'Search tasks...' %}"
+                               value="{{ search_query|default:'' }}">
+                    </div>
+
+                    {# Status filter — pending / in_progress / completed #}
+                    <div class="col-md-2">
+                        <select name="status" class="form-select">
+                            <option value="">{% translate "All Status" %}</option>
+                            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>{% translate "Pending" %}</option>
+                            <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>{% translate "In Progress" %}</option>
+                            <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>{% translate "Completed" %}</option>
+                        </select>
+                    </div>
+
+                    {# Priority filter — 0=Low, 1=Medium, 2=High #}
+                    <div class="col-md-2">
+                        <select name="priority" class="form-select">
+                            <option value="">{% translate "All Priority" %}</option>
+                            <option value="0" {% if priority_filter == '0' %}selected{% endif %}>{% translate "Low" %}</option>
+                            <option value="1" {% if priority_filter == '1' %}selected{% endif %}>{% translate "Medium" %}</option>
+                            <option value="2" {% if priority_filter == '2' %}selected{% endif %}>{% translate "High" %}</option>
+                        </select>
+                    </div>
+
+                    {# Date filter — today / this week / this month (based on due_date) #}
+                    <div class="col-md-2">
+                        <select name="date_filter" class="form-select">
+                            <option value="">{% translate "All Dates" %}</option>
+                            <option value="today" {% if date_filter == 'today' %}selected{% endif %}>{% translate "Today" %}</option>
+                            <option value="this_week" {% if date_filter == 'this_week' %}selected{% endif %}>{% translate "This Week" %}</option>
+                            <option value="this_month" {% if date_filter == 'this_month' %}selected{% endif %}>{% translate "This Month" %}</option>
+                        </select>
+                    </div>
+
+                    {# Action buttons — apply filters or reset all #}
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100 mb-1"><i class="fas fa-filter"></i> {% translate "Filter" %}</button>
+                        <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary w-100"><i class="fas fa-undo"></i> {% translate "Reset" %}</a>
+                    </div>
+                </form>
+
+                {# Active filters summary — helps users understand the current view state #}
+                {% if status_filter or priority_filter or date_filter or search_query %}
+                    <div class="mt-3">
+                        <small class="text-muted">{% translate "Active filters:" %}</small>
+                        {% if status_filter %}<span class="badge bg-info">{{ status_filter }}</span>{% endif %}
+                        {% if priority_filter %}<span class="badge bg-info">Priority: {{ priority_filter }}</span>{% endif %}
+                        {% if date_filter %}<span class="badge bg-info">Date: {{ date_filter }}</span>{% endif %}
+                        {% if search_query %}<span class="badge bg-info">Search: "{{ search_query }}"</span>{% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ============================================================
+             TASK LIST with PAGINATION and DUE-DATE COLOUR CODING (A4)
+             ============================================================ -->
+        {% if tasks %}
+
+            {# Show total number of tasks after filtering #}
+            <div class="mb-2 text-muted">
+                <small>{% blocktranslate with count=tasks.paginator.count %}Showing {{ count }} task(s){% endblocktranslate %}</small>
+            </div>
+
+            {# Capture current timestamp once for efficient due-date comparison #}
+            {% now "U" as current_timestamp %}
+
+            <div class="list-group">
+                {% for task in tasks.object_list %}
+
+                    {# Single task item — toggle button, title, description, status badge, and metadata #}
+                    <div class="list-group-item
+                        {# Determine due-date colour class using inline conditionals (A4) #}
+                        {% if task.due_date %}
+                            {% with due_timestamp=task.due_date|date:"U" %}
+                                {% if due_timestamp < current_timestamp %}
+                                    list-group-item-due-overdue
+                                {% elif due_timestamp <= current_timestamp|add:259200 %}
+                                    list-group-item-due-soon
+                                {% else %}
+                                    list-group-item-due-far
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}
+                    ">
+                        <div class="d-flex align-items-center gap-2">
+
+                            {# One-click status toggle — complete or reopen #}
+                            <form method="post" action="{% url 'tasks:task_toggle' task.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-success" title="Toggle status">
+                                    {% if task.status == 'completed' %}
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    {% else %}
+                                        <i class="far fa-circle text-muted"></i>
+                                    {% endif %}
+                                </button>
+                            </form>
+
+                            {# Task title and truncated description — clickable to detail view #}
+                            <a href="{% url 'tasks:task_detail' task.pk %}" class="flex-grow-1 text-decoration-none text-dark">
+                                <h5 class="mb-1">{{ task.title }}</h5>
+                                <p class="mb-1 text-muted">{{ task.description|truncatewords:20 }}</p>
+                            </a>
+
+                            {# Status badge — colour-coded for quick recognition #}
+                            <small>
+                                <span class="badge bg-{% if task.status == 'completed' %}success{% elif task.status == 'in_progress' %}warning{% else %}secondary{% endif %}">
+                                    {{ task.get_status_display }}
+                                </span>
+                            </small>
+                        </div>
+
+                        {# Task metadata: category, creation date, priority, due date with visual indicator #}
+                        <div class="d-flex gap-3 mt-2 flex-wrap">
+                            <small class="text-muted"><i class="fas fa-tag"></i> {{ task.category|default:"No Category" }}</small>
+                            <small class="text-muted"><i class="fas fa-calendar"></i> {{ task.created_at|date:"Y-m-d" }}</small>
+                            <small class="text-muted"><i class="fas fa-flag"></i>
+                                {% if task.priority == 0 %}Low{% elif task.priority == 1 %}Medium{% else %}High{% endif %}
+                            </small>
+
+                            {# Due date with status indicator (A4) #}
+                            {% if task.due_date %}
+                                {% with due_timestamp=task.due_date|date:"U" %}
+                                    <small class="text-muted d-flex align-items-center gap-1">
+                                        <i class="fas fa-clock"></i> Due: {{ task.due_date|date:"Y-m-d" }}
+                                        {% if due_timestamp < current_timestamp %}
+                                            <span class="badge bg-danger rounded-pill" title="Overdue">!</span>
+                                        {% elif due_timestamp <= current_timestamp|add:259200 %}
+                                            <span class="badge bg-warning rounded-pill" title="Due soon">⚠</span>
+                                        {% else %}
+                                            <span class="badge bg-success rounded-pill" title="On track">✓</span>
+                                        {% endif %}
+                                    </small>
+                                {% endwith %}
+                            {% else %}
+                                <small class="text-muted"><i class="fas fa-clock"></i> No due date</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+
+            <!-- ============================================================
+                 PAGINATION CONTROLS
+                 Only shown when more than one page exists.
+                 All GET parameters except 'page' are preserved in links.
+                 ============================================================ -->
+            {% if tasks.paginator.num_pages > 1 %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {# First & Previous page links #}
+                        {% if tasks.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fas fa-angle-double-left"></i></a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ tasks.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fas fa-angle-left"></i></a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link"><i class="fas fa-angle-left"></i></span></li>
+                        {% endif %}
+
+                        {# Page numbers — show current page ± 2 neighbours for readability #}
+                        {% for num in tasks.paginator.page_range %}
+                            {% if num == tasks.number %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > tasks.number|add:'-3' and num < tasks.number|add:'3' %}
+                                <li class="page-item"><a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {# Next & Last page links #}
+                        {% if tasks.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ tasks.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fas fa-angle-right"></i></a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ tasks.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fas fa-angle-double-right"></i></a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link"><i class="fas fa-angle-right"></i></span></li>
+                        {% endif %}
+                    </ul>
+                    {# Current page indicator — accessibility and user context #}
+                    <div class="text-center text-muted small">
+                        {% blocktranslate with current=tasks.number total=tasks.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktranslate %}
+                    </div>
+                </nav>
+            {% endif %}
+
+        {% else %}
+            <!-- ============================================================
+                 EMPTY STATE — shown when no tasks match the current filters
+                 ============================================================ -->
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <h3>{% translate "No tasks found" %}</h3>
+                <p class="text-muted">{% translate "Create your first task!" %}</p>
+                <a href="{% url 'tasks:task_create' %}" class="btn btn-primary"><i class="fas fa-plus"></i> {% translate "Create Task" %}</a>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- ============================================================
+     CUSTOM STYLES (A3 & A4)
+     Dashboard cards and due-date colour coding.
+     These are scoped to this template only via extra_css block.
+     ============================================================ -->
+{% block extra_css %}
+<style>
+    /* Dashboard cards — subtle hover lift effect */
+    .dashboard-card {
+        border: none;
+        border-radius: 12px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        cursor: default;
+    }
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12) !important;
+    }
+    /* Icon container — semi-transparent background for depth */
+    .dashboard-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.15);
+        border-radius: 10px;
+        flex-shrink: 0;
+    }
+    .dashboard-number {
+        line-height: 1.2;
+        font-weight: 700;
+    }
+    .dashboard-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.8;
+    }
+    .text-dark-50 {
+        color: rgba(0,0,0,0.6) !important;
+    }
+
+    /* Due-date colour coding (A4) — left border accent */
+    .list-group-item-due-overdue {
+        border-left: 5px solid #dc3545 !important;
+        background-color: rgba(220, 53, 69, 0.04);
+    }
+    .list-group-item-due-overdue:hover {
+        background-color: rgba(220, 53, 69, 0.08);
+    }
+    .list-group-item-due-soon {
+        border-left: 5px solid #ffc107 !important;
+        background-color: rgba(255, 193, 7, 0.04);
+    }
+    .list-group-item-due-soon:hover {
+        background-color: rgba(255, 193, 7, 0.08);
+    }
+    .list-group-item-due-far {
+        border-left: 5px solid #198754 !important;
+        background-color: rgba(25, 135, 84, 0.04);
+    }
+    .list-group-item-due-far:hover {
+        background-color: rgba(25, 135, 84, 0.08);
+    }
+
+    /* Responsive — mobile-friendly adjustments */
+    @media (max-width: 576px) {
+        .dashboard-card .card-body { padding: 0.8rem 1rem; }
+        .dashboard-icon { width: 40px; height: 40px; }
+        .dashboard-icon i { font-size: 1.5rem !important; }
+        .dashboard-number { font-size: 1.5rem !important; }
+    }
+</style>
+{% endblock extra_css %}
+
+{% endblock content %}
