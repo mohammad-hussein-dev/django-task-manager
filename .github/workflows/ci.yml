@@ -1,5 +1,11 @@
 name: Django CI
 
+# ============================================================================
+# Trigger Configuration
+# ============================================================================
+# Runs on pushes to main branch and pull requests targeting main.
+# This ensures code quality is checked before merging.
+# ============================================================================
 on:
   push:
     branches: [main]
@@ -9,33 +15,94 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    # ==========================================================================
+    # Multi-Python Version Testing
+    # ==========================================================================
+    # Tests the project against three Python versions to ensure compatibility.
+    # This catches version-specific issues early.
+    # ==========================================================================
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
+      # ========================================================================
+      # Step 1: Checkout Source Code
+      # ========================================================================
+      # Fetches the latest code from the repository.
+      # ========================================================================
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # ========================================================================
+      # Step 2: Set Up Python Environment
+      # ========================================================================
+      # Installs the specified Python version and adds it to PATH.
+      # ========================================================================
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
+      # ========================================================================
+      # Step 3: Install Dependencies
+      # ========================================================================
+      # Upgrades pip and installs the project in editable mode with dev extras.
+      # -e .[dev] installs both runtime and development dependencies.
+      # ========================================================================
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]
 
+      # ========================================================================
+      # Step 4: Create conftest.py for Path Resolution
+      # ========================================================================
+      # Generates a conftest.py file that adds the project root to sys.path.
+      # This is a robust fallback to ensure the 'apps' module is always found.
+      # ========================================================================
+      - name: Create conftest.py
+        run: |
+          cat > conftest.py << 'PYTEST'
+          import sys
+          from pathlib import Path
+          # Add project root to Python's module search path
+          project_root = Path(__file__).parent
+          if str(project_root) not in sys.path:
+              sys.path.insert(0, str(project_root))
+          PYTEST
+
+      # ========================================================================
+      # Step 5: Run Database Migrations
+      # ========================================================================
+      # Applies Django migrations in the test database.
+      # This ensures the database schema is up to date before running tests.
+      # ========================================================================
       - name: Run migrations
         run: |
           cd src
           python manage.py migrate
 
+      # ========================================================================
+      # Step 6: Run Tests with Coverage
+      # ========================================================================
+      # Executes the test suite and generates coverage reports.
+      # PYTHONPATH is set to the workspace root to resolve the 'apps' module.
+      # Coverage is output in both terminal (human-readable) and XML (for Codecov).
+      # ========================================================================
       - name: Run tests with coverage
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          pytest
+          pytest --cov=apps --cov-report=term --cov-report=xml
 
+      # ========================================================================
+      # Step 7: Upload Coverage to Codecov
+      # ========================================================================
+      # Sends the coverage report to Codecov for tracking and badge generation.
+      # fail_ci_if_error: false prevents the workflow from failing if upload fails.
+      # ========================================================================
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
