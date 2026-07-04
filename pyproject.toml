@@ -25,15 +25,9 @@ dev = [
     "pre-commit>=4.2",
 ]
 
-# ============================================================================
-# Package Discovery Configuration
-# ============================================================================
-# Instructs setuptools to find the 'apps' package in the project root.
-# This is critical for pip install -e . to work correctly in CI environments.
-# ============================================================================
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["apps*"]
+include = ["apps*", "src*"]
 
 [tool.black]
 line-length = 88
@@ -52,14 +46,6 @@ ignore_missing_imports = true
 warn_return_any = true
 warn_unused_configs = true
 
-# ============================================================================
-# Testing - Pytest Configuration
-# ============================================================================
-# Critical for CI: pythonpath ensures the 'apps' module is discoverable.
-# DJANGO_SETTINGS_MODULE tells pytest-django where to find Django settings.
-# testpaths limits test discovery to the 'apps' directory for speed.
-# addopts enables verbose output, coverage tracking, and XML report for Codecov.
-# ============================================================================
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "task_manager.settings"
 python_files = "tests.py test_*.py *_tests.py"
