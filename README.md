@@ -92,13 +92,11 @@ Now open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
 ### Task List (English)
 
-
-📋 My Tasks
-┌────────────────────────────────────────────────────────────┐
-│ 🔴 Buy groceries          Due: Today        Category: Home │
-│ 🟡 Finish report          Due: Tomorrow     Category: Work │
-│ 🟢 Plan vacation          Due: Next Month   Category: Personal │
-└────────────────────────────────────────────────────────────┘
+| Status | Title | Due Date | Category |
+| :---: | :--- | :--- | :--- |
+| 🔴 | Buy groceries | Today | Home |
+| 🟡 | Finish report | Tomorrow | Work |
+| 🟢 | Plan vacation | Next Month | Personal |
 
 *Color coding: 🔴 Overdue · 🟡 Soon (within 3 days) · 🟢 Far (>3 days)*
 
@@ -106,14 +104,11 @@ Now open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
 ### صفحه‌ی لیست وظایف (فارسی)
 
-
-📋 وظایف من
-┌────────────────────────────────────────────────────────────┐
-│ 🔴 خرید مواد غذایی        مهلت: امروز     دسته: خانه      │
-│ 🟡 تکمیل گزارش            مهلت: فردا      دسته: کار       │
-│ 🟢 برنامه‌ریزی سفر         مهلت: ماه آینده دسته: شخصی     │
-└────────────────────────────────────────────────────────────┘
-
+| وضعیت | عنوان | مهلت | دسته |
+| :---: | :--- | :--- | :--- |
+| 🔴 | خرید مواد غذایی | امروز | خانه |
+| 🟡 | تکمیل گزارش | فردا | کار |
+| 🟢 | برنامه‌ریزی سفر | ماه آینده | شخصی |
 
 ---
 
@@ -204,4 +199,3 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 ---
 
 ⭐ If you found this project helpful, consider giving it a star on GitHub!
-```
