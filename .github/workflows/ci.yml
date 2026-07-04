@@ -26,6 +26,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]
+          pip install coverage
 
       - name: Run migrations
         run: |
@@ -34,13 +35,15 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          python -m pytest --ds=task_manager.settings --cov=apps --cov-report=term --cov-report=xml
+          cd src
+          coverage run manage.py test
+          coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
+          files: ./src/coverage.xml
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
