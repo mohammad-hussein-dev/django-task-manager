@@ -32,10 +32,9 @@ jobs:
           python manage.py migrate
 
       - name: Run tests with coverage
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: |
-          pytest
+          coverage run manage.py test
+          coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
