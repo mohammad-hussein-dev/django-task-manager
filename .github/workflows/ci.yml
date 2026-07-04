@@ -33,10 +33,8 @@ jobs:
           python manage.py migrate
 
       - name: Run tests with coverage
-        env:
-          PYTHONPATH: .
         run: |
-          pytest --cov=apps --cov-report=term --cov-report=xml
+          PYTHONPATH=. pytest --cov=apps --cov-report=term --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
