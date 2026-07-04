@@ -8,25 +8,22 @@
 <div class="row">
     <div class="col-12">
 
-        <!-- ============================================================
-             PAGE HEADER — title, task count badge, and create button
-             ============================================================ -->
+        {# ============================================================ #}
+        {# PAGE HEADER — title, task count badge, and create button      #}
+        {# ============================================================ #}
         <h1 class="mb-4">
             <i class="fas fa-list"></i> {% translate "My Tasks" %}
-            {# Show total task count as a badge next to the title for quick glance #}
             <span class="badge bg-secondary ms-2">{{ total_tasks }}</span>
             <a href="{% url 'tasks:task_create' %}" class="btn btn-success float-end">
                 <i class="fas fa-plus"></i> {% translate "New Task" %}
             </a>
         </h1>
 
-        <!-- ============================================================
-             DASHBOARD STATISTICS CARDS (A3)
-             Four metric cards: total, completed, in-progress, overdue.
-             These give users an at-a-glance view of their productivity.
-             ============================================================ -->
+        {# ============================================================ #}
+        {# DASHBOARD STATISTICS CARDS (A3)                               #}
+        {# Four metric cards: total, completed, in-progress, overdue.   #}
+        {# ============================================================ #}
         <div class="row g-3 mb-4">
-            {# Total tasks card — blue accent #}
             <div class="col-sm-6 col-lg-3">
                 <div class="card dashboard-card bg-primary text-white h-100 shadow-sm">
                     <div class="card-body d-flex align-items-center">
@@ -39,7 +36,6 @@
                 </div>
             </div>
 
-            {# Completed tasks card — green accent #}
             <div class="col-sm-6 col-lg-3">
                 <div class="card dashboard-card bg-success text-white h-100 shadow-sm">
                     <div class="card-body d-flex align-items-center">
@@ -52,7 +48,6 @@
                 </div>
             </div>
 
-            {# In-progress tasks card — yellow accent #}
             <div class="col-sm-6 col-lg-3">
                 <div class="card dashboard-card bg-warning text-dark h-100 shadow-sm">
                     <div class="card-body d-flex align-items-center">
@@ -65,7 +60,6 @@
                 </div>
             </div>
 
-            {# Overdue tasks card — red accent (critical metric) #}
             <div class="col-sm-6 col-lg-3">
                 <div class="card dashboard-card bg-danger text-white h-100 shadow-sm">
                     <div class="card-body d-flex align-items-center">
@@ -79,22 +73,18 @@
             </div>
         </div>
 
-        <!-- ============================================================
-             ADVANCED FILTER FORM
-             Status, priority, date range, and search — all via GET
-             to preserve filter state across pagination.
-             ============================================================ -->
+        {# ============================================================ #}
+        {# ADVANCED FILTER FORM                                         #}
+        {# ============================================================ #}
         <div class="card mb-4">
             <div class="card-body">
                 <form method="get" class="row g-3">
-                    {# Search field — case-insensitive partial match on title #}
                     <div class="col-md-3">
                         <input type="text" name="search" class="form-control"
                                placeholder="{% translate 'Search tasks...' %}"
                                value="{{ search_query|default:'' }}">
                     </div>
 
-                    {# Status filter — pending / in_progress / completed #}
                     <div class="col-md-2">
                         <select name="status" class="form-select">
                             <option value="">{% translate "All Status" %}</option>
@@ -104,7 +94,6 @@
                         </select>
                     </div>
 
-                    {# Priority filter — 0=Low, 1=Medium, 2=High #}
                     <div class="col-md-2">
                         <select name="priority" class="form-select">
                             <option value="">{% translate "All Priority" %}</option>
@@ -114,7 +103,6 @@
                         </select>
                     </div>
 
-                    {# Date filter — today / this week / this month (based on due_date) #}
                     <div class="col-md-2">
                         <select name="date_filter" class="form-select">
                             <option value="">{% translate "All Dates" %}</option>
@@ -124,14 +112,12 @@
                         </select>
                     </div>
 
-                    {# Action buttons — apply filters or reset all #}
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-primary w-100 mb-1"><i class="fas fa-filter"></i> {% translate "Filter" %}</button>
                         <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary w-100"><i class="fas fa-undo"></i> {% translate "Reset" %}</a>
                     </div>
                 </form>
 
-                {# Active filters summary — helps users understand the current view state #}
                 {% if status_filter or priority_filter or date_filter or search_query %}
                     <div class="mt-3">
                         <small class="text-muted">{% translate "Active filters:" %}</small>
@@ -144,25 +130,21 @@
             </div>
         </div>
 
-        <!-- ============================================================
-             TASK LIST with PAGINATION and DUE-DATE COLOUR CODING (A4)
-             ============================================================ -->
+        {# ============================================================ #}
+        {# TASK LIST with PAGINATION and DUE-DATE COLOUR CODING (A4)   #}
+        {# ============================================================ #}
         {% if tasks %}
 
-            {# Show total number of tasks after filtering #}
             <div class="mb-2 text-muted">
                 <small>{% blocktranslate with count=tasks.paginator.count %}Showing {{ count }} task(s){% endblocktranslate %}</small>
             </div>
 
-            {# Capture current timestamp once for efficient due-date comparison #}
             {% now "U" as current_timestamp %}
 
             <div class="list-group">
                 {% for task in tasks.object_list %}
 
-                    {# Single task item — toggle button, title, description, status badge, and metadata #}
                     <div class="list-group-item
-                        {# Determine due-date colour class using inline conditionals (A4) #}
                         {% if task.due_date %}
                             {% with due_timestamp=task.due_date|date:"U" %}
                                 {% if due_timestamp < current_timestamp %}
@@ -177,7 +159,6 @@
                     ">
                         <div class="d-flex align-items-center gap-2">
 
-                            {# One-click status toggle — complete or reopen #}
                             <form method="post" action="{% url 'tasks:task_toggle' task.pk %}" style="display: inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-sm btn-outline-success" title="Toggle status">
@@ -189,13 +170,11 @@
                                 </button>
                             </form>
 
-                            {# Task title and truncated description — clickable to detail view #}
                             <a href="{% url 'tasks:task_detail' task.pk %}" class="flex-grow-1 text-decoration-none text-dark">
                                 <h5 class="mb-1">{{ task.title }}</h5>
                                 <p class="mb-1 text-muted">{{ task.description|truncatewords:20 }}</p>
                             </a>
 
-                            {# Status badge — colour-coded for quick recognition #}
                             <small>
                                 <span class="badge bg-{% if task.status == 'completed' %}success{% elif task.status == 'in_progress' %}warning{% else %}secondary{% endif %}">
                                     {{ task.get_status_display }}
@@ -203,7 +182,6 @@
                             </small>
                         </div>
 
-                        {# Task metadata: category, creation date, priority, due date with visual indicator #}
                         <div class="d-flex gap-3 mt-2 flex-wrap">
                             <small class="text-muted"><i class="fas fa-tag"></i> {{ task.category|default:"No Category" }}</small>
                             <small class="text-muted"><i class="fas fa-calendar"></i> {{ task.created_at|date:"Y-m-d" }}</small>
@@ -211,7 +189,6 @@
                                 {% if task.priority == 0 %}Low{% elif task.priority == 1 %}Medium{% else %}High{% endif %}
                             </small>
 
-                            {# Due date with status indicator (A4) #}
                             {% if task.due_date %}
                                 {% with due_timestamp=task.due_date|date:"U" %}
                                     <small class="text-muted d-flex align-items-center gap-1">
@@ -234,15 +211,12 @@
                 {% endfor %}
             </div>
 
-            <!-- ============================================================
-                 PAGINATION CONTROLS
-                 Only shown when more than one page exists.
-                 All GET parameters except 'page' are preserved in links.
-                 ============================================================ -->
+            {# ============================================================ #}
+            {# PAGINATION CONTROLS                                          #}
+            {# ============================================================ #}
             {% if tasks.paginator.num_pages > 1 %}
                 <nav aria-label="Page navigation" class="mt-4">
                     <ul class="pagination justify-content-center">
-                        {# First & Previous page links #}
                         {% if tasks.has_previous %}
                             <li class="page-item"><a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fas fa-angle-double-left"></i></a></li>
                             <li class="page-item"><a class="page-link" href="?page={{ tasks.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fas fa-angle-left"></i></a></li>
@@ -250,7 +224,6 @@
                             <li class="page-item disabled"><span class="page-link"><i class="fas fa-angle-left"></i></span></li>
                         {% endif %}
 
-                        {# Page numbers — show current page ± 2 neighbours for readability #}
                         {% for num in tasks.paginator.page_range %}
                             {% if num == tasks.number %}
                                 <li class="page-item active"><span class="page-link">{{ num }}</span></li>
@@ -259,7 +232,6 @@
                             {% endif %}
                         {% endfor %}
 
-                        {# Next & Last page links #}
                         {% if tasks.has_next %}
                             <li class="page-item"><a class="page-link" href="?page={{ tasks.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fas fa-angle-right"></i></a></li>
                             <li class="page-item"><a class="page-link" href="?page={{ tasks.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i class="fas fa-angle-double-right"></i></a></li>
@@ -267,7 +239,6 @@
                             <li class="page-item disabled"><span class="page-link"><i class="fas fa-angle-right"></i></span></li>
                         {% endif %}
                     </ul>
-                    {# Current page indicator — accessibility and user context #}
                     <div class="text-center text-muted small">
                         {% blocktranslate with current=tasks.number total=tasks.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktranslate %}
                     </div>
@@ -275,9 +246,9 @@
             {% endif %}
 
         {% else %}
-            <!-- ============================================================
-                 EMPTY STATE — shown when no tasks match the current filters
-                 ============================================================ -->
+            {# ============================================================ #}
+            {# EMPTY STATE                                                 #}
+            {# ============================================================ #}
             <div class="text-center py-5">
                 <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                 <h3>{% translate "No tasks found" %}</h3>
@@ -289,14 +260,13 @@
     </div>
 </div>
 
-<!-- ============================================================
-     CUSTOM STYLES (A3 & A4)
-     Dashboard cards and due-date colour coding.
-     These are scoped to this template only via extra_css block.
-     ============================================================ -->
+{% endblock content %}
+
+{# ============================================================ #}
+{# CUSTOM STYLES (A3 & A4)                                      #}
+{# ============================================================ #}
 {% block extra_css %}
 <style>
-    /* Dashboard cards — subtle hover lift effect */
     .dashboard-card {
         border: none;
         border-radius: 12px;
@@ -307,7 +277,6 @@
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(0,0,0,0.12) !important;
     }
-    /* Icon container — semi-transparent background for depth */
     .dashboard-icon {
         width: 48px;
         height: 48px;
@@ -332,7 +301,6 @@
         color: rgba(0,0,0,0.6) !important;
     }
 
-    /* Due-date colour coding (A4) — left border accent */
     .list-group-item-due-overdue {
         border-left: 5px solid #dc3545 !important;
         background-color: rgba(220, 53, 69, 0.04);
@@ -355,7 +323,6 @@
         background-color: rgba(25, 135, 84, 0.08);
     }
 
-    /* Responsive — mobile-friendly adjustments */
     @media (max-width: 576px) {
         .dashboard-card .card-body { padding: 0.8rem 1rem; }
         .dashboard-icon { width: 40px; height: 40px; }
@@ -364,5 +331,3 @@
     }
 </style>
 {% endblock extra_css %}
-
-{% endblock content %}
