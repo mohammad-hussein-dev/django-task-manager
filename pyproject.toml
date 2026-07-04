@@ -25,6 +25,12 @@ dev = [
     "pre-commit>=4.2",
 ]
 
+# ============================================================================
+# IMPORTANT: Package Discovery Configuration
+# ============================================================================
+# This tells setuptools to find packages inside the 'src/' directory.
+# Without this, 'pip install -e .' will not work correctly.
+# ============================================================================
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*"]
@@ -46,9 +52,15 @@ ignore_missing_imports = true
 warn_return_any = true
 warn_unused_configs = true
 
+# ============================================================================
+# IMPORTANT: Pytest Configuration
+# ============================================================================
+# 'pythonpath' tells pytest to add the current directory and the 'src/'
+# directory to sys.path, ensuring that 'apps' can be imported.
+# ============================================================================
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "task_manager.settings"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "-v --cov=apps --cov-report=term --cov-report=xml"
+addopts = "-v --cov=src/apps --cov-report=term --cov-report=xml"
 testpaths = ["src/apps"]
-pythonpath = ["."]
+pythonpath = [".", "src"]
