@@ -12,6 +12,7 @@ dependencies = [
     "Django>=5.1",
     "django-crispy-forms>=2.3",
     "crispy-bootstrap5>=0.4",
+    "django-extensions",
 ]
 
 [project.optional-dependencies]
@@ -27,7 +28,7 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src*"]
+include = ["accounts*", "tasks*", "task_manager*"]
 
 [tool.black]
 line-length = 88
@@ -49,6 +50,6 @@ warn_unused_configs = true
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "task_manager.settings"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "-v --cov=apps --cov-report=term --cov-report=xml"
-testpaths = ["src/apps"]
-pythonpath = [".", "src"]
+addopts = "-v --cov=accounts --cov=tasks --cov-report=term --cov-report=xml"
+testpaths = ["accounts", "tasks"]
+pythonpath = ["."]
