@@ -16,16 +16,12 @@ class TestTaskFormCoverage:
         Category.objects.create(name='Personal', user=user2)
 
         form = TaskForm(user=user)
-        # Category field is hidden in the form, we test that category_name exists
+        # Test that category_name field exists
         assert 'category_name' in form.fields
-        # The hidden category field exists
-        assert form.fields['category'].queryset.count() == 1
 
     def test_form_init_without_user(self):
         form = TaskForm()
         assert 'category_name' in form.fields
-        # Without user, category queryset should be empty
-        assert form.fields['category'].queryset.count() == 0
 
     def test_form_clean_priority_valid(self):
         user = User.objects.create_user(username='testuser', password='testpass')

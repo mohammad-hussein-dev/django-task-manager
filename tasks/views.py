@@ -5,24 +5,18 @@ This module provides CRUD views for tasks with authentication,
 pagination, filtering, and deadline status indicators.
 """
 
-from datetime import timedelta
-
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.utils import timezone
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    ListView,
-    UpdateView,
-)
+from django.shortcuts import get_object_or_404, redirect
+from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from .models import Task, Category
 from .forms import TaskForm
-from .models import Category, Task
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -33,85 +27,102 @@ class TaskListView(LoginRequiredMixin, ListView):
         - status: 'pending', 'in_progress', 'completed'
         - date_filter: 'today', 'this_week', 'this_month'
         - category: category ID
+        - priority: 'low', 'medium', 'high'
+        - search: partial match on title
 
     Pagination: 10 tasks per page with graceful handling of invalid pages.
     """
 
     model = Task
-    template_name = "tasks/task_list.html"
+    template_name = 'tasks/task_list.html'
     paginate_by = 10
 
     def get_queryset(self):
         """Return tasks belonging to the current user, with optional filters."""
-        queryset = Task.objects.filter(user=self.request.user).select_related(
-            "category"
-        )
+        queryset = Task.objects.filter(user=self.request.user).select_related('category')
 
         # Filter by status
-        status = self.request.GET.get("status")
+        status = self.request.GET.get('status')
         if status:
             queryset = queryset.filter(status=status)
 
+        # Filter by priority
+        priority = self.request.GET.get('priority')
+        if priority:
+            queryset = queryset.filter(priority=priority)
+
         # Filter by date
-        date_filter = self.request.GET.get("date_filter")
+        date_filter = self.request.GET.get('date_filter')
         if date_filter:
             today = timezone.now().date()
-            if date_filter == "today":
+            if date_filter == 'today':
                 queryset = queryset.filter(due_date=today)
-            elif date_filter == "this_week":
+            elif date_filter == 'this_week':
                 start_of_week = today - timedelta(days=today.weekday())
                 end_of_week = start_of_week + timedelta(days=6)
                 queryset = queryset.filter(due_date__range=[start_of_week, end_of_week])
-            elif date_filter == "this_month":
+            elif date_filter == 'this_month':
                 start_of_month = today.replace(day=1)
                 next_month = start_of_month.replace(day=28) + timedelta(days=4)
                 end_of_month = next_month - timedelta(days=next_month.day)
-                queryset = queryset.filter(
-                    due_date__range=[start_of_month, end_of_month]
-                )
+                queryset = queryset.filter(due_date__range=[start_of_month, end_of_month])
 
         # Filter by category
-        category_id = self.request.GET.get("category")
+        category_id = self.request.GET.get('category')
         if category_id:
             queryset = queryset.filter(category_id=category_id)
 
+        # Search by title (partial match)
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(title__icontains=search)
+
         # Order by due date (soonest first)
-        return queryset.order_by("due_date")
+        return queryset.order_by('due_date')
 
     def get_context_data(self, **kwargs):
         """Add filter values, categories, and timestamp to the context."""
         context = super().get_context_data(**kwargs)
 
         # Preserve current filter values for template use
-        context["current_status"] = self.request.GET.get("status", "")
-        context["current_date_filter"] = self.request.GET.get("date_filter", "")
-        context["date_filter"] = self.request.GET.get("date_filter", "")  # for tests
-        context["current_category"] = self.request.GET.get("category", "")
+        context['current_status'] = self.request.GET.get('status', '')
+        context['current_date_filter'] = self.request.GET.get('date_filter', '')
+        context['date_filter'] = self.request.GET.get('date_filter', '')
+        context['current_category'] = self.request.GET.get('category', '')
+        context['search_query'] = self.request.GET.get('search', '')
 
         # List of all categories for the filter dropdown
-        context["categories"] = Category.objects.filter(user=self.request.user)
+        context['categories'] = Category.objects.filter(user=self.request.user)
 
         # Current timestamp for deadline calculations (in template)
-        context["current_timestamp"] = int(timezone.now().timestamp())
+        context['current_timestamp'] = int(timezone.now().timestamp())
+
+        # Add task counts for dashboard stats
+        tasks = Task.objects.filter(user=self.request.user)
+        context['total_tasks'] = tasks.count()
+        context['completed_tasks'] = tasks.filter(status='completed').count()
+        context['in_progress_tasks'] = tasks.filter(status='in_progress').count()
+        context['overdue_tasks'] = tasks.filter(
+            due_date__lt=timezone.now().date(),
+            status__in=['pending', 'in_progress']
+        ).count()
 
         # Also add 'tasks' as the page object list (for templates expecting 'tasks')
-        if "page_obj" in context:
-            context["tasks"] = context["page_obj"]
+        if 'page_obj' in context:
+            context['tasks'] = context['page_obj']
 
         return context
 
     def paginate_queryset(self, queryset, page_size):
         """Override to handle invalid page numbers gracefully."""
         paginator = Paginator(queryset, page_size)
-        page_number = self.request.GET.get("page")
+        page_number = self.request.GET.get('page')
 
         try:
             page = paginator.page(page_number)
         except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
             page = paginator.page(1)
         except EmptyPage:
-            # If page is out of range, deliver last page.
             page = paginator.page(paginator.num_pages)
 
         return (paginator, page, page.object_list, page.has_other_pages())
@@ -121,8 +132,8 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     """Display detailed information about a single task."""
 
     model = Task
-    template_name = "tasks/task_detail.html"
-    context_object_name = "task"
+    template_name = 'tasks/task_detail.html'
+    context_object_name = 'task'
 
     def get_queryset(self):
         """Ensure users can only see their own tasks."""
@@ -134,13 +145,13 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
     model = Task
     form_class = TaskForm
-    template_name = "tasks/task_form.html"
-    success_url = reverse_lazy("tasks:task_list")
+    template_name = 'tasks/task_form.html'
+    success_url = reverse_lazy('tasks:task_list')
 
     def get_form_kwargs(self):
         """Pass the current user to the form."""
         kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
+        kwargs['user'] = self.request.user
         return kwargs
 
     def form_valid(self, form):
@@ -151,7 +162,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         """Add a page title for the template."""
         context = super().get_context_data(**kwargs)
-        context["title"] = "Create Task"
+        context['title'] = 'Create Task'
         return context
 
 
@@ -160,13 +171,13 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 
     model = Task
     form_class = TaskForm
-    template_name = "tasks/task_form.html"
-    success_url = reverse_lazy("tasks:task_list")
+    template_name = 'tasks/task_form.html'
+    success_url = reverse_lazy('tasks:task_list')
 
     def get_form_kwargs(self):
         """Pass the current user to the form."""
         kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
+        kwargs['user'] = self.request.user
         return kwargs
 
     def get_queryset(self):
@@ -176,7 +187,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         """Add a page title for the template."""
         context = super().get_context_data(**kwargs)
-        context["title"] = "Edit Task"
+        context['title'] = 'Edit Task'
         return context
 
 
@@ -184,8 +195,8 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     """Delete a task with confirmation."""
 
     model = Task
-    template_name = "tasks/task_confirm_delete.html"
-    success_url = reverse_lazy("tasks:task_list")
+    template_name = 'tasks/task_confirm_delete.html'
+    success_url = reverse_lazy('tasks:task_list')
 
     def get_queryset(self):
         """Ensure users can only delete their own tasks."""
@@ -203,10 +214,10 @@ class TaskToggleView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         """Handle GET requests by toggling the task status."""
-        task = get_object_or_404(Task, pk=kwargs["pk"], user=request.user)
-        if task.status == "completed":
-            task.status = "pending"
+        task = get_object_or_404(Task, pk=kwargs['pk'], user=request.user)
+        if task.status == 'completed':
+            task.status = 'pending'
         else:
-            task.status = "completed"
+            task.status = 'completed'
         task.save()
-        return redirect("tasks:task_list")
+        return redirect('tasks:task_list')

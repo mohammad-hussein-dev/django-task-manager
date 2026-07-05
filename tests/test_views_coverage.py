@@ -28,8 +28,10 @@ class TestTaskViewsCoverage:
         self.client.login(username='testuser', password='testpass')
         response = self.client.get(reverse('tasks:task_list') + '?priority=high')
         assert response.status_code == 200
-        assert 'High Task' in str(response.content)
-        assert 'Low Task' not in str(response.content)
+        # Now only High Task should appear
+        content = response.content.decode()
+        assert 'High Task' in content
+        assert 'Low Task' not in content
 
     def test_task_list_with_status_filter(self):
         user = User.objects.create_user(username='testuser', password='testpass')
