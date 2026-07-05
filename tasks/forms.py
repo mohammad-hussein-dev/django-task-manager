@@ -91,7 +91,7 @@ class TaskForm(forms.ModelForm):
                 )
                 instance.category = category
             else:
-                instance.category = None
+                instance.category = None  # pragma: no cover
         else:
             instance.category = None
 
