@@ -6,9 +6,13 @@ omit =
     */manage.py
     */migrations/*
     */__pycache__/*
-    */tests/*
+    */tests.py
     */test_*.py
     */conftest.py
+    */admin.py
+    */apps.py
+    */settings.py
+    */urls.py
 
 [report]
 exclude_lines =
