@@ -323,5 +323,5 @@ It helps others discover it and motivates further development.
 
 ---
 
-**Built with ❤️ in Arch Linux**
-```
+**Built with 🐧💻 in Arch Linux**
+
