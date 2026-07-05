@@ -4,11 +4,16 @@ Tests to cover missing lines in views.py.
 import pytest
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.test import Client
 from tasks.models import Task, Category
 
 
 @pytest.mark.django_db
 class TestTaskViewsCoverage:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.client = Client()
+
     def test_task_list_with_search_empty(self):
         user = User.objects.create_user(username='testuser', password='testpass')
         self.client.login(username='testuser', password='testpass')
@@ -40,7 +45,6 @@ class TestTaskViewsCoverage:
         user = User.objects.create_user(username='testuser', password='testpass')
         task = Task.objects.create(title='Test', user=user, status='pending')
         self.client.login(username='testuser', password='testpass')
-        # Should redirect after toggle
         response = self.client.get(reverse('tasks:task_toggle', args=[task.pk]))
         assert response.status_code == 302
         task.refresh_from_db()
@@ -73,5 +77,4 @@ class TestTaskViewsCoverage:
         self.client.login(username='testuser', password='testpass')
         response = self.client.get(reverse('tasks:task_delete', args=[task.pk]))
         assert response.status_code == 200
-        # Check that it shows confirmation page (optional)
         assert 'Delete' in str(response.content)

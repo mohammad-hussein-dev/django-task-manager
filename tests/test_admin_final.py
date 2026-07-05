@@ -3,15 +3,19 @@ Final tests to cover remaining lines in admin.py.
 """
 import pytest
 from django.contrib.admin import site
+from django.test import RequestFactory
 from django.contrib.auth.models import User
 from tasks.models import Task, Category
-from django.test import RequestFactory
 
 
 @pytest.mark.django_db
 def test_admin_get_actions():
     task_admin = site._registry[Task]
-    actions = task_admin.get_actions(None)
+    request = RequestFactory().get('/admin/tasks/task/')
+    # Use a dummy user to avoid permission issues
+    user = User.objects.create_user(username='testuser', password='testpass')
+    request.user = user
+    actions = task_admin.get_actions(request)
     assert 'delete_selected' in actions
 
 
