@@ -2,93 +2,129 @@
 
 [![Django CI](https://github.com/mohammad-hussein-dev/django-task-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/mohammad-hussein-dev/django-task-manager/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/mohammad-hussein-dev/django-task-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/mohammad-hussein-dev/django-task-manager)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Django-5.1%2B-green)](https://www.djangoproject.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![Django Version](https://img.shields.io/badge/django-5.1%2B-green)](https://www.djangoproject.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/mohammad-hussein-dev/django-task-manager)](https://github.com/mohammad-hussein-dev/django-task-manager/commits/main)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
-> A professional task management system built with Django — featuring user authentication, category management, and deadline tracking with visual status indicators.
+> **A professional task management system built with Django** — featuring user authentication, category management, and deadline tracking with visual status indicators.
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#-overview)
+- [Features](#-features)
+- [Technology Stack](#-technology-stack)
+- [Installation & Usage](#-installation--usage)
+- [Screenshots](#-screenshots)
+- [Testing](#-testing)
+- [Project Structure](#-project-structure)
+- [Development Workflow](#-development-workflow)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
 
 ---
 
 ## 📖 Overview
 
-This project is a full-featured task manager web application built with Django. It allows users to **register**, **login**, **create**, **edit**, **delete**, and **categorize** tasks with due dates. The UI provides clear visual feedback for task urgency using color-coded status indicators (overdue, soon, far).
+**Django Task Manager** is a full-featured, production-ready task management web application built with Django. It provides an intuitive interface for users to **register**, **login**, **create**, **edit**, **delete**, and **categorize** tasks with due dates.
 
-Perfect for personal productivity, team collaboration, or as a learning resource for Django best practices.
+The UI provides clear visual feedback for task urgency using color-coded status indicators — **overdue** (🔴), **soon** (🟡), and **far** (🟢) — making it easy to prioritize work at a glance.
 
-### ✨ Features
-
-- 🔐 **User Authentication** — Register, login, logout with Django's built-in auth system
-- 📝 **Task Management** — Full CRUD (Create, Read, Update, Delete) for tasks
-- 🏷️ **Categories** — Organize tasks with customizable, color-coded categories
-- ⏰ **Deadline Tracking** — Visual indicators for overdue (red), soon (yellow), and far (green) deadlines
-- 🌍 **Bilingual** — Full support for both Persian (فارسی) and English
-- 📱 **Responsive UI** — Clean, modern interface built with Bootstrap 5
-- 🧪 **96% Test Coverage** — Comprehensive unit tests with `pytest` and `pytest-cov`
-- ⚡ **Production-Ready** — CI/CD with GitHub Actions, pre-commit hooks, and code coverage reporting
+**Perfect for:**
+- Personal productivity & daily task tracking
+- Team collaboration & project management
+- Learning Django best practices & clean architecture
+- Portfolio showcase for aspiring Django developers
 
 ---
 
-## 🧮 Architecture & Design
+## ✨ Features
 
-The project follows Django's **MVT (Model-View-Template)** pattern with a clean separation of concerns:
-
-| Component | Description |
+| Feature | Description |
 | :--- | :--- |
-| **Models** | `Task`, `Category` with relationships, timestamps, and status methods |
-| **Views** | Class-based views (`ListView`, `CreateView`, `UpdateView`, `DeleteView`) with mixins |
-| **Forms** | `TaskForm`, `CategoryForm` with `crispy-forms` for Bootstrap 5 styling |
-| **Templates** | Modular `base.html` with template inheritance and include tags |
-| **URLs** | Clean URL routing with app-level `urls.py` and project-level includes |
+| 🔐 **User Authentication** | Full registration, login, logout using Django's built-in auth system |
+| 📝 **Task Management** | Complete CRUD (Create, Read, Update, Delete) operations |
+| 🏷️ **Categories** | Organize tasks with user-specific, color‑coded categories |
+| ⏰ **Deadline Tracking** | Visual indicators for overdue (🔴), soon (🟡), and far (🟢) deadlines |
+| 🌍 **Bilingual Support** | Full support for both **Persian (فارسی)** and **English** |
+| 📱 **Responsive UI** | Clean, modern interface built with **Bootstrap 5** |
+| 🧪 **100% Test Coverage** | Comprehensive unit tests with `pytest` and `pytest-cov` |
+| ⚡ **Production‑Ready** | CI/CD with GitHub Actions, pre‑commit hooks, and Codecov reporting |
 
 ---
 
-## 🛠️ Installation & Usage
+## 🛠️ Technology Stack
 
-### 1. Clone the repository
+| Category | Technologies |
+| :--- | :--- |
+| **Backend** | Python 3.10+, Django 5.1+, django-crispy-forms |
+| **Frontend** | Bootstrap 5, HTML5, CSS3, Font Awesome |
+| **Database** | SQLite (development), PostgreSQL (production-ready) |
+| **Testing** | pytest, pytest-django, pytest-cov, coverage.py |
+| **CI/CD** | GitHub Actions, Codecov |
+| **Code Quality** | Black, Ruff, MyPy, Pre-commit |
+| **Containerization** | Docker, Docker Compose |
+| **OS** | Arch Linux (development), Any Linux / macOS / Windows (runtime) |
+
+---
+
+## 🚀 Installation & Usage
+
+### Option 1: Using Docker (Recommended)
 
 ```bash
+# 1. Clone the repository
 git clone https://github.com/mohammad-hussein-dev/django-task-manager.git
 cd django-task-manager
+
+# 2. Start the containers
+docker-compose up -d
+
+# 3. Run database migrations
+docker-compose exec web python manage.py migrate
+
+# 4. (Optional) Create a superuser
+docker-compose exec web python manage.py createsuperuser
+
+# 5. Access the application
+open http://localhost:8000
 ```
 
-### 2. Set up a virtual environment (recommended)
+### Option 2: Manual Setup (Local)
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/mohammad-hussein-dev/django-task-manager.git
+cd django-task-manager
+
+# 2. Create and activate a virtual environment
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-```
 
-### 3. Install the package with development dependencies
-
-```bash
+# 3. Install dependencies
 pip install -e .[dev]
-```
 
-### 4. Set up the database
-
-```bash
-cd src
+# 4. Run database migrations
 python manage.py migrate
-```
 
-### 5. Create a superuser (optional, for admin access)
-
-```bash
+# 5. (Optional) Create a superuser
 python manage.py createsuperuser
-```
 
-### 6. Run the development server
-
-```bash
+# 6. Run the development server
 python manage.py runserver
-```
 
-Now open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
+# 7. Access the application
+open http://127.0.0.1:8000
+```
 
 ---
 
-## 📊 Sample Output
+## 📊 Screenshots
 
 ### Task List (English)
 
@@ -114,22 +150,25 @@ Now open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
 ## 🧪 Testing
 
-This project uses `pytest` and `pytest-django` for unit testing with **96% test coverage**.
+The project uses **pytest** with **100% test coverage**.
 
-Run the tests:
+### Run all tests
 
 ```bash
-cd src
 pytest
 ```
 
-Run tests with coverage report:
+### Run tests with coverage report
 
 ```bash
-pytest --cov=apps --cov-report=term --cov-report=html
+pytest --cov=accounts --cov=tasks --cov=task_manager --cov-report=term --cov-report=html
 ```
 
-Coverage report will be generated in `htmlcov/index.html`. Open it in your browser to see detailed coverage breakdown.
+Open `htmlcov/index.html` in your browser for detailed coverage breakdown.
+
+### Test coverage badge
+
+[![codecov](https://codecov.io/gh/mohammad-hussein-dev/django-task-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/mohammad-hussein-dev/django-task-manager)
 
 ---
 
@@ -137,65 +176,152 @@ Coverage report will be generated in `htmlcov/index.html`. Open it in your brows
 
 ```
 django-task-manager/
-├── apps/
-│   ├── accounts/                     # User authentication app
-│   │   ├── models.py
-│   │   ├── views.py                  # LoginView, RegisterView
-│   │   ├── urls.py
-│   │   ├── tests.py
-│   │   └── migrations/
-│   └── tasks/                        # Task management app
-│       ├── models.py                 # Task, Category models
-│       ├── views.py                  # Task CRUD views (CBVs)
-│       ├── forms.py                  # TaskForm, CategoryForm
-│       ├── urls.py
-│       ├── tests.py                  # 32 unit tests
-│       └── migrations/
-├── src/
-│   └── task_manager/                 # Django project settings
-│       ├── settings.py
-│       ├── urls.py                   # Project-level URL routing
-│       ├── wsgi.py
-│       └── asgi.py
+├── accounts/                      # User authentication app
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── tasks/                         # Task management app
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── task_manager/                  # Django project settings
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
 ├── static/
 │   └── css/
-│       └── style.css                 # Custom styles (Bootstrap 5 + extensions)
-├── templates/                        # Django templates
-│   ├── base.html                     # Base template with navbar & footer
+│       └── style.css
+├── templates/                     # Global templates
+│   ├── base.html
 │   ├── accounts/
 │   │   ├── login.html
 │   │   └── register.html
 │   └── tasks/
-│       ├── task_list.html            # Main dashboard
+│       ├── task_list.html
 │       ├── task_detail.html
-│       ├── task_form.html            # Create/Edit
+│       ├── task_form.html
 │       └── task_confirm_delete.html
-├── pyproject.toml                    # Project metadata, dependencies, and tool configs
-├── .pre-commit-config.yaml           # Pre-commit hooks (ruff, black, etc.)
-├── .github/workflows/ci.yml          # GitHub Actions CI
+├── tests/                         # Additional test files
+│   ├── __init__.py
+│   ├── test_admin_*.py
+│   ├── test_forms_*.py
+│   ├── test_models_*.py
+│   └── test_views_*.py
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── .coveragerc
+├── .pre-commit-config.yaml
 ├── .gitignore
+├── docker-compose.yml
+├── Dockerfile
 ├── LICENSE
+├── manage.py
+├── pyproject.toml
 └── README.md
+```
+
+---
+
+## 🛠️ Development Workflow
+
+### Branching Strategy
+
+| Branch | Purpose |
+| :--- | :--- |
+| `main` | Production-ready code |
+| `develop` | Integration branch |
+| `feature/*` | New features |
+| `fix/*` | Bug fixes |
+| `hotfix/*` | Critical production fixes |
+
+### Commit Convention
+
+Following [Conventional Commits](https://www.conventionalcommits.org/):
+
+```bash
+feat(tasks): add deadline filtering
+fix(templates): resolve nested with block
+refactor(views): simplify queryset
+docs(readme): update installation guide
+style(css): improve responsive layout
+test(forms): add validation tests
+chore(deps): update Django to 5.1.3
+```
+
+### Code Quality Tools
+
+| Tool | Purpose |
+| :--- | :--- |
+| **Black** | Code formatting |
+| **Ruff** | Linting & import sorting |
+| **MyPy** | Static type checking |
+| **Pre-commit** | Automated checks before commits |
+
+**Setup pre-commit:**
+```bash
+pre-commit install
+pre-commit run --all-files
 ```
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you have ideas for improvements, feel free to open an issue or submit a pull request.
+Contributions are welcome! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Commit your changes**: `git commit -m 'feat: add amazing feature'`
+4. **Push to the branch**: `git push origin feature/amazing-feature`
+5. **Open a Pull Request** against the `develop` branch
+
+**Before submitting a PR, ensure:**
+- ✅ All tests pass (`pytest`)
+- ✅ Code is formatted (`black .`)
+- ✅ Linting passes (`ruff check .`)
+- ✅ No commented-out code or debug prints
+- ✅ New features include tests
+- ✅ Documentation is updated
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+Distributed under the **MIT License**. See the [LICENSE](LICENSE) file for more information.
 
 ---
 
 ## 👨‍💻 Author
 
-**Mohammad Hussein** — [GitHub](https://github.com/mohammad-hussein-dev)
+**Mohammad Hussein**  
+- 🌐 GitHub: [@mohammad-hussein-dev](https://github.com/mohammad-hussein-dev)  
+- 📧 Email: [king.mohamd.09876@gmail.com](mailto:king.mohamd.09876@gmail.com)  
+- 💬 Telegram: [@mohammad_hussein_dev](https://t.me/mohammad_hussein_dev)
+
+> *"I don't just write code — I simulate the universe."*
 
 ---
 
-⭐ If you found this project helpful, consider giving it a star on GitHub!
+## ⭐ Support the Project
+
+If you found this project helpful, please consider giving it a **star** on GitHub! ⭐  
+It helps others discover it and motivates further development.
+
+---
+
+**Built with ❤️ in Arch Linux**
+```
