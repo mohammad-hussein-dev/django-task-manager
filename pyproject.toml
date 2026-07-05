@@ -50,6 +50,6 @@ warn_unused_configs = true
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "task_manager.settings"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "-v --cov=accounts --cov=tasks --cov=task_manager --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc --cov-omit=*/tests.py,*/test_*.py,*/admin.py,*/apps.py,*/settings.py,*/urls.py,*/asgi.py,*/wsgi.py,*/manage.py"
+addopts = "-v --cov=accounts --cov=tasks --cov=task_manager --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc"
 testpaths = ["accounts", "tasks", "tests"]
 pythonpath = ["."]
