@@ -33,8 +33,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          coverage run manage.py test
-          coverage xml
+          pytest --cov=accounts --cov=tasks --cov=task_manager --cov-report=term --cov-report=xml --cov-config=.coveragerc
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
