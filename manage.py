@@ -4,13 +4,14 @@ import os
 import sys
 from pathlib import Path
 
-# Add src/ to Python path so that 'apps' and 'task_manager' can be found
-BASE_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(BASE_DIR / "src"))
-
-
 def main():
     """Run administrative tasks."""
+    # Add 'apps/' directory to Python path
+    base_dir = Path(__file__).resolve().parent
+    apps_dir = base_dir / "apps"
+    if str(apps_dir) not in sys.path:
+        sys.path.insert(0, str(apps_dir))
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "task_manager.settings")
     try:
         from django.core.management import execute_from_command_line
@@ -21,7 +22,6 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
 
 if __name__ == "__main__":
     main()
