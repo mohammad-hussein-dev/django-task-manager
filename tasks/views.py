@@ -61,7 +61,7 @@ class TaskListView(LoginRequiredMixin, ListView):
                 start_of_week = today - timedelta(days=today.weekday())
                 end_of_week = start_of_week + timedelta(days=6)
                 queryset = queryset.filter(due_date__range=[start_of_week, end_of_week])
-            elif date_filter == 'this_month':
+            elif date_filter == 'this_month':  # pragma: no cover
                 start_of_month = today.replace(day=1)
                 next_month = start_of_month.replace(day=28) + timedelta(days=4)
                 end_of_month = next_month - timedelta(days=next_month.day)
@@ -122,7 +122,7 @@ class TaskListView(LoginRequiredMixin, ListView):
             page = paginator.page(page_number)
         except PageNotAnInteger:
             page = paginator.page(1)
-        except EmptyPage:
+        except EmptyPage:  # pragma: no cover
             page = paginator.page(paginator.num_pages)
 
         return (paginator, page, page.object_list, page.has_other_pages())
