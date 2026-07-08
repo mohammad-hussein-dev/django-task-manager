@@ -19,7 +19,6 @@
 - [Features](#-features)
 - [Technology Stack](#-technology-stack)
 - [Installation & Usage](#-installation--usage)
-- [Screenshots](#-screenshots)
 - [Testing](#-testing)
 - [Project Structure](#-project-structure)
 - [Development Workflow](#-development-workflow)
@@ -49,12 +48,15 @@ The UI provides clear visual feedback for task urgency using color-coded status 
 | :--- | :--- |
 | 🔐 **User Authentication** | Full registration, login, logout using Django's built-in auth system |
 | 📝 **Task Management** | Complete CRUD (Create, Read, Update, Delete) operations |
-| 🏷️ **Categories** | Organize tasks with user-specific, color‑coded categories |
-| ⏰ **Deadline Tracking** | Visual indicators for overdue (🔴), soon (🟡), and far (🟢) deadlines |
-| 🌍 **Bilingual Support** | Full support for both **Persian (فارسی)** and **English** |
+| 🏷️ **Categories** | Organize tasks with user-specific categories, each with a name and creation timestamp |
+| ⏰ **Deadline Tracking** | Visual indicators for overdue (🔴), soon (🟡, within 3 days), and far (🟢) deadlines |
+| 🔍 **Filtering & Search** | Filter by status, priority, date range, category, or search by title |
+| 📊 **Dashboard Stats** | Quick overview of total, completed, in-progress, and overdue tasks |
+| 🌍 **Bilingual Support** | Full support for both **Persian (فارسی)** and **English** user interfaces |
 | 📱 **Responsive UI** | Clean, modern interface built with **Bootstrap 5** |
-| 🧪 **100% Test Coverage** | Comprehensive unit tests with `pytest` and `pytest-cov` |
+| 🧪 **98% Test Coverage** | Comprehensive unit tests with `pytest` and `pytest-cov` |
 | ⚡ **Production‑Ready** | CI/CD with GitHub Actions, pre‑commit hooks, and Codecov reporting |
+| 🐳 **Containerized** | Docker and Docker Compose support for easy deployment |
 
 ---
 
@@ -62,7 +64,7 @@ The UI provides clear visual feedback for task urgency using color-coded status 
 
 | Category | Technologies |
 | :--- | :--- |
-| **Backend** | Python 3.10+, Django 5.1+, django-crispy-forms |
+| **Backend** | Python 3.10+, Django 5.1+, django-crispy-forms, crispy-bootstrap5 |
 | **Frontend** | Bootstrap 5, HTML5, CSS3, Font Awesome |
 | **Database** | SQLite (development), PostgreSQL (production-ready) |
 | **Testing** | pytest, pytest-django, pytest-cov, coverage.py |
@@ -107,7 +109,7 @@ python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # 3. Install dependencies
-pip install -e .[dev]
+pip install -r requirements.txt
 
 # 4. Run database migrations
 python manage.py migrate
@@ -124,33 +126,9 @@ open http://127.0.0.1:8000
 
 ---
 
-## 📊 Screenshots
-
-### Task List (English)
-
-| Status | Title | Due Date | Category |
-| :---: | :--- | :--- | :--- |
-| 🔴 | Buy groceries | Today | Home |
-| 🟡 | Finish report | Tomorrow | Work |
-| 🟢 | Plan vacation | Next Month | Personal |
-
-*Color coding: 🔴 Overdue · 🟡 Soon (within 3 days) · 🟢 Far (>3 days)*
-
----
-
-### صفحه‌ی لیست وظایف (فارسی)
-
-| وضعیت | عنوان | مهلت | دسته |
-| :---: | :--- | :--- | :--- |
-| 🔴 | خرید مواد غذایی | امروز | خانه |
-| 🟡 | تکمیل گزارش | فردا | کار |
-| 🟢 | برنامه‌ریزی سفر | ماه آینده | شخصی |
-
----
-
 ## 🧪 Testing
 
-The project uses **pytest** with **100% test coverage**.
+The project uses **pytest** with **~98% test coverage**.
 
 ### Run all tests
 
@@ -188,13 +166,13 @@ django-task-manager/
 ├── tasks/                         # Task management app
 │   ├── migrations/
 │   ├── __init__.py
-│   ├── admin.py
+│   ├── admin.py                   # Admin interface with bulk actions and color-coded status
 │   ├── apps.py
-│   ├── forms.py
-│   ├── models.py
+│   ├── forms.py                   # TaskForm with dynamic category handling
+│   ├── models.py                  # Task and Category models with relationships
 │   ├── tests.py
 │   ├── urls.py
-│   └── views.py
+│   └── views.py                   # Class-based views with filtering and pagination
 ├── task_manager/                  # Django project settings
 │   ├── __init__.py
 │   ├── asgi.py
@@ -216,10 +194,22 @@ django-task-manager/
 │       └── task_confirm_delete.html
 ├── tests/                         # Additional test files
 │   ├── __init__.py
-│   ├── test_admin_*.py
-│   ├── test_forms_*.py
-│   ├── test_models_*.py
-│   └── test_views_*.py
+│   ├── test_admin_actions.py
+│   ├── test_admin_coverage.py
+│   ├── test_admin_final.py
+│   ├── test_forms_coverage.py
+│   ├── test_forms_final.py
+│   ├── test_forms_final_coverage.py
+│   ├── test_forms_line94.py
+│   ├── test_forms_line94_final.py
+│   ├── test_forms_missing.py
+│   ├── test_models_coverage.py
+│   ├── test_models_final.py
+│   ├── test_views_coverage.py
+│   ├── test_views_final.py
+│   ├── test_views_line219.py
+│   ├── test_views_priority_search.py
+│   └── test_views_search_missing.py
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
@@ -231,6 +221,7 @@ django-task-manager/
 ├── LICENSE
 ├── manage.py
 ├── pyproject.toml
+├── requirements.txt
 └── README.md
 ```
 
@@ -287,7 +278,7 @@ Contributions are welcome! Here's how you can help:
 2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
 3. **Commit your changes**: `git commit -m 'feat: add amazing feature'`
 4. **Push to the branch**: `git push origin feature/amazing-feature`
-5. **Open a Pull Request** against the `develop` branch
+5. **Open a Pull Request** against the `main` branch
 
 **Before submitting a PR, ensure:**
 - ✅ All tests pass (`pytest`)
@@ -324,4 +315,3 @@ It helps others discover it and motivates further development.
 ---
 
 **Built with 🐧💻 in Arch Linux**
-
