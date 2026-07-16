@@ -36,8 +36,25 @@ target-version = ['py310', 'py311', 'py312', 'py313']
 
 [tool.ruff]
 line-length = 88
-select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "SIM", "RET"]
-ignore = ["E501", "B008"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "W",
+    "I",
+    "N",
+    "UP",
+    "B",
+    "A",
+    "C4",
+    "SIM",
+    "RET",
+]
+ignore = [
+    "E501",
+    "B008",
+]
 
 [tool.mypy]
 python_version = "3.10"
@@ -53,3 +70,7 @@ python_files = "tests.py test_*.py *_tests.py"
 addopts = "-v --cov=accounts --cov=tasks --cov=task_manager --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc"
 testpaths = ["accounts", "tasks", "tests"]
 pythonpath = ["."]
+
+[tool.isort]
+profile = "black"
+line_length = 88

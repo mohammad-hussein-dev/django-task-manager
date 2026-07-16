@@ -298,9 +298,9 @@ Distributed under the **MIT License**. See the [LICENSE](LICENSE) file for more 
 
 ## 👨‍💻 Author
 
-**Mohammad Hussein**  
-- 🌐 GitHub: [@mohammad-hussein-dev](https://github.com/mohammad-hussein-dev)  
-- 📧 Email: [king.mohamd.09876@gmail.com](mailto:king.mohamd.09876@gmail.com)  
+**Mohammad Hussein**
+- 🌐 GitHub: [@mohammad-hussein-dev](https://github.com/mohammad-hussein-dev)
+- 📧 Email: [king.mohamd.09876@gmail.com](mailto:king.mohamd.09876@gmail.com)
 - 💬 Telegram: [@mohammad_hussein_dev](https://t.me/mohammad_hussein_dev)
 
 > *"I don't just write code — I simulate the universe."*
@@ -309,7 +309,7 @@ Distributed under the **MIT License**. See the [LICENSE](LICENSE) file for more 
 
 ## ⭐ Support the Project
 
-If you found this project helpful, please consider giving it a **star** on GitHub! ⭐  
+If you found this project helpful, please consider giving it a **star** on GitHub! ⭐
 It helps others discover it and motivates further development.
 
 ---
