@@ -25,6 +25,9 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "accounts",  # نام ساده
     "tasks",  # نام ساده
+    "rest_framework",
+    "drf_spectacular",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -100,3 +103,28 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "tasks:task_list"
 LOGOUT_REDIRECT_URL = "accounts:login"
 LOGIN_URL = "accounts:login"
+
+
+###############################################################################
+# Django REST Framework
+###############################################################################
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
+
+###############################################################################
+# drf-spectacular
+###############################################################################
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Django Task Manager API",
+    "DESCRIPTION": "REST API for Django Task Manager",
+    "VERSION": "1.0.0",
+}
