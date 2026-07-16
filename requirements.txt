@@ -50,3 +50,4 @@ typing_extensions==4.16.0
 uritemplate==4.2.0
 virtualenv==21.6.1
 wheel==0.47.0
+djangorestframework
