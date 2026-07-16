@@ -3,6 +3,7 @@ Django settings for task_manager project.
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
@@ -127,4 +128,17 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Django Task Manager API",
     "DESCRIPTION": "REST API for Django Task Manager",
     "VERSION": "1.0.0",
+}
+
+
+###############################################################################
+# Simple JWT
+###############################################################################
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": True,
 }
