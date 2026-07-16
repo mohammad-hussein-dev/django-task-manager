@@ -10,7 +10,10 @@ from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-dev-key")
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "NR494t_hs4H0cgskhaMxNvTIhcgW0s7K3ZREdMfgwK9HEVAxai3pwrORcpt7YixczdTk101IGvbmvLabsXgTQQ",
+)
 DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 

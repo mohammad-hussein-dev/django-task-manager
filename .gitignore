@@ -56,3 +56,8 @@ wheels/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Coverage
+.coverage
+coverage.xml
+htmlcov/
