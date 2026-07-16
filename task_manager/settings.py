@@ -128,6 +128,20 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Django Task Manager API",
     "DESCRIPTION": "REST API for Django Task Manager",
     "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SECURITY": [
+        {
+            "BearerAuth": [],
+        },
+    ],
+    "SECURITY_SCHEMES": {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        },
+    },
 }
 
 
