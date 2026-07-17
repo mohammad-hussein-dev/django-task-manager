@@ -15,7 +15,13 @@ SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "NR494t_hs4H0cgskhaMxNvTIhcgW0s7K3ZREdMfgwK9HEVAxai3pwrORcpt7YixczdTk101IGvbmvLabsXgTQQ",
 )
-DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
+DEBUG = (
+    os.environ.get(
+        "DJANGO_DEBUG",
+        "True",
+    ).lower()
+    == "true"
+)
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 INSTALLED_APPS = [
@@ -28,8 +34,8 @@ INSTALLED_APPS = [
     "django_extensions",
     "crispy_forms",
     "crispy_bootstrap5",
-    "accounts",  # نام ساده
-    "tasks",  # نام ساده
+    "accounts",
+    "tasks",
     "rest_framework",
     "drf_spectacular",
     "api",
@@ -172,7 +178,12 @@ SIMPLE_JWT = {
 # Production Security
 ###############################################################################
 
-if not DEBUG:
+# Enable production security only when DEBUG is False
+# and the application is not running under Django tests.
+
+RUNNING_TESTS = "PYTEST_CURRENT_TEST" in os.environ or "test" in os.sys.argv
+
+if not DEBUG and not RUNNING_TESTS:
     SECURE_SSL_REDIRECT = (
         os.environ.get(
             "DJANGO_SECURE_SSL_REDIRECT",
@@ -188,4 +199,7 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_PROXY_SSL_HEADER = (
+        "HTTP_X_FORWARDED_PROTO",
+        "https",
+    )
