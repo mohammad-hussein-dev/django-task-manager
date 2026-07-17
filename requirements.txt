@@ -49,7 +49,6 @@ rpds-py==2026.6.3
 ruff==0.15.22
 setuptools==83.0.0
 sqlparse==0.5.5
--e git+https://github.com/mohammad-hussein-dev/django-task-manager.git@e8817aa9a5b6b1f31af1036905379af76146bf11#egg=taskmanager
 types-PyYAML==6.0.12.20260518
 typing_extensions==4.16.0
 uritemplate==4.2.0
