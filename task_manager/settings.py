@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # ============================================================
-# Core Security
+# Security
 # ============================================================
 
 SECRET_KEY = os.environ.get(
@@ -38,8 +38,8 @@ ALLOWED_HOSTS = os.environ.get(
 ).split(",")
 
 
-# Railway fallback
 ALLOWED_HOSTS += [
+    "web-production-d1d2.up.railway.app",
     "web-production-e9601c.up.railway.app",
 ]
 
@@ -167,10 +167,10 @@ LOCALE_PATHS = [
 
 
 # ============================================================
-# Static Files
+# Static / Media
 # ============================================================
 
-STATIC_URL = "/"
+STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -183,8 +183,13 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "media"
+
+
 # ============================================================
-# Crispy Forms
+# Crispy
 # ============================================================
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -207,7 +212,7 @@ LOGIN_URL = "accounts:login"
 
 
 # ============================================================
-# Django REST Framework
+# DRF
 # ============================================================
 
 REST_FRAMEWORK = {
@@ -222,7 +227,7 @@ REST_FRAMEWORK = {
 
 
 # ============================================================
-# Swagger / OpenAPI
+# Swagger
 # ============================================================
 
 SPECTACULAR_SETTINGS = {
@@ -251,7 +256,6 @@ SIMPLE_JWT = {
 # Production Security
 # ============================================================
 
-
 RUNNING_TESTS = (
     "PYTEST_CURRENT_TEST" in os.environ
     or "pytest" in os.path.basename(sys.argv[0]).lower()
@@ -272,7 +276,7 @@ if not DEBUG and not RUNNING_TESTS:
     SESSION_COOKIE_SECURE = (
         os.getenv(
             "DJANGO_SESSION_COOKIE_SECURE",
-            "True",
+            "False",
         ).lower()
         == "true"
     )
@@ -280,7 +284,7 @@ if not DEBUG and not RUNNING_TESTS:
     CSRF_COOKIE_SECURE = (
         os.getenv(
             "DJANGO_CSRF_COOKIE_SECURE",
-            "True",
+            "False",
         ).lower()
         == "true"
     )
@@ -288,16 +292,18 @@ if not DEBUG and not RUNNING_TESTS:
     SECURE_HSTS_SECONDS = int(
         os.getenv(
             "DJANGO_SECURE_HSTS_SECONDS",
-            "31536000",
+            "0",
         )
     )
 
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 
-    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_PRELOAD = False
 
 
-# Railway Proxy Support
+# ============================================================
+# Railway Proxy
+# ============================================================
 
 SECURE_PROXY_SSL_HEADER = (
     "HTTP_X_FORWARDED_PROTO",
