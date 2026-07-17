@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: django-task-manager
+    runtime: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn task_manager.wsgi:application
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
