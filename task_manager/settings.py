@@ -23,25 +23,27 @@ SECRET_KEY = os.environ.get(
 )
 
 
-DEBUG = (
-    os.environ.get(
-        "DJANGO_DEBUG",
-        "False",
-    ).lower()
-    == "true"
-)
+DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 
 
-ALLOWED_HOSTS = os.environ.get(
-    "DJANGO_ALLOWED_HOSTS",
-    "localhost,127.0.0.1",
-).split(",")
-
-
-ALLOWED_HOSTS += [
+# Railway / Production domains
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
     "web-production-d1d2.up.railway.app",
     "web-production-e9601c.up.railway.app",
+    "django-tasks-mh.up.railway.app",
 ]
+
+
+# Allow custom domains from environment
+extra_hosts = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS",
+    "",
+)
+
+if extra_hosts:
+    ALLOWED_HOSTS += [host.strip() for host in extra_hosts.split(",") if host.strip()]
 
 
 # ============================================================
@@ -189,7 +191,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 
 # ============================================================
-# Crispy
+# Crispy Forms
 # ============================================================
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
