@@ -146,18 +146,6 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,
-    "SECURITY": [
-        {
-            "BearerAuth": [],
-        },
-    ],
-    "SECURITY_SCHEMES": {
-        "BearerAuth": {
-            "type": "http",
-            "scheme": "bearer",
-            "bearerFormat": "JWT",
-        },
-    },
 }
 
 
@@ -178,24 +166,28 @@ SIMPLE_JWT = {
 # Production Security
 ###############################################################################
 
-# Enable production security only when DEBUG is False
-# and the application is not running under Django tests.
-
-RUNNING_TESTS = "PYTEST_CURRENT_TEST" in os.environ or "test" in os.sys.argv
+RUNNING_TESTS = (
+    "PYTEST_CURRENT_TEST" in os.environ
+    or "pytest" in os.path.basename(os.sys.argv[0]).lower()
+    or "test" in os.sys.argv
+)
 
 if not DEBUG and not RUNNING_TESTS:
+
     SECURE_SSL_REDIRECT = (
-        os.environ.get(
-            "DJANGO_SECURE_SSL_REDIRECT",
-            "True",
-        ).lower()
-        == "true"
+        os.getenv("DJANGO_SECURE_SSL_REDIRECT", "True").lower() == "true"
     )
 
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = (
+        os.getenv("DJANGO_SESSION_COOKIE_SECURE", "True").lower() == "true"
+    )
 
-    SECURE_HSTS_SECONDS = 31536000
+    CSRF_COOKIE_SECURE = (
+        os.getenv("DJANGO_CSRF_COOKIE_SECURE", "True").lower() == "true"
+    )
+
+    SECURE_HSTS_SECONDS = int(os.getenv("DJANGO_SECURE_HSTS_SECONDS", "31536000"))
+
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 

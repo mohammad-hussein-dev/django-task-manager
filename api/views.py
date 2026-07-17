@@ -10,6 +10,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     CRUD API for Task model.
     """
 
+    queryset = Task.objects.none()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
