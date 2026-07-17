@@ -3,22 +3,26 @@
 [![Django CI](https://github.com/mohammad-hussein-dev/django-task-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/mohammad-hussein-dev/django-task-manager/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/mohammad-hussein-dev/django-task-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/mohammad-hussein-dev/django-task-manager)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
-[![Django Version](https://img.shields.io/badge/django-5.1%2B-green)](https://www.djangoproject.com/)
+[![Django Version](https://img.shields.io/badge/django-6.0%2B-green)](https://www.djangoproject.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 [![GitHub last commit](https://img.shields.io/github/last-commit/mohammad-hussein-dev/django-task-manager)](https://github.com/mohammad-hussein-dev/django-task-manager/commits/main)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
-> **A professional task management system built with Django** — featuring user authentication, category management, and deadline tracking with visual status indicators.
+> **A production-ready task management system built with Django** — featuring authentication, task organization, REST API, JWT security, automated testing, Docker support, and cloud deployment.
 
 ---
 
-## 📑 Table of Contents
+# 📑 Table of Contents
 
 - [Overview](#-overview)
+- [Live Demo](#-live-demo)
 - [Features](#-features)
 - [Technology Stack](#-technology-stack)
+- [Production Architecture](#-production-architecture)
 - [Installation & Usage](#-installation--usage)
+- [Environment Variables](#-environment-variables)
+- [API Documentation](#-api-documentation)
 - [Testing](#-testing)
 - [Project Structure](#-project-structure)
 - [Development Workflow](#-development-workflow)
@@ -28,290 +32,423 @@
 
 ---
 
-## 📖 Overview
+# 📖 Overview
 
-**Django Task Manager** is a full-featured, production-ready task management web application built with Django. It provides an intuitive interface for users to **register**, **login**, **create**, **edit**, **delete**, and **categorize** tasks with due dates.
+**Django Task Manager** is a full-featured production-ready task management web application built with Django.
 
-The UI provides clear visual feedback for task urgency using color-coded status indicators — **overdue** (🔴), **soon** (🟡), and **far** (🟢) — making it easy to prioritize work at a glance.
+The project provides a modern productivity platform where users can:
 
-**Perfect for:**
-- Personal productivity & daily task tracking
-- Team collaboration & project management
-- Learning Django best practices & clean architecture
-- Portfolio showcase for aspiring Django developers
+- Create and manage tasks
+- Organize tasks using categories
+- Track deadlines
+- Filter and search tasks
+- Manage user accounts
+- Access REST API endpoints
+- Authenticate using JWT tokens
+
+The interface provides visual deadline indicators:
+
+- 🔴 Overdue tasks
+- 🟡 Tasks approaching deadline
+- 🟢 Future tasks
+
+This project was designed as both a real-world application and a professional Django portfolio project.
 
 ---
 
-## ✨ Features
+# 🚀 Live Demo
+
+Production deployment:
+
+🌐 https://django-tasks-mh.up.railway.app
+
+Hosted with:
+
+- Railway
+- Gunicorn
+- WhiteNoise
+- Django production configuration
+
+---
+
+# ✨ Features
 
 | Feature | Description |
-| :--- | :--- |
-| 🔐 **User Authentication** | Full registration, login, logout using Django's built-in auth system |
-| 📝 **Task Management** | Complete CRUD (Create, Read, Update, Delete) operations |
-| 🏷️ **Categories** | Organize tasks with user-specific categories, each with a name and creation timestamp |
-| ⏰ **Deadline Tracking** | Visual indicators for overdue (🔴), soon (🟡, within 3 days), and far (🟢) deadlines |
-| 🔍 **Filtering & Search** | Filter by status, priority, date range, category, or search by title |
-| 📊 **Dashboard Stats** | Quick overview of total, completed, in-progress, and overdue tasks |
-| 🌍 **Bilingual Support** | Full support for both **Persian (فارسی)** and **English** user interfaces |
-| 📱 **Responsive UI** | Clean, modern interface built with **Bootstrap 5** |
-| 🧪 **98% Test Coverage** | Comprehensive unit tests with `pytest` and `pytest-cov` |
-| ⚡ **Production‑Ready** | CI/CD with GitHub Actions, pre‑commit hooks, and Codecov reporting |
-| 🐳 **Containerized** | Docker and Docker Compose support for easy deployment |
+|---|---|
+| 🔐 Authentication | Complete registration, login, logout system using Django authentication |
+| 📝 Task Management | Full CRUD operations for tasks |
+| 🏷️ Categories | User-specific task categories |
+| ⏰ Deadline Tracking | Smart deadline status indicators |
+| 🔍 Search & Filtering | Search tasks and filter by status, priority, category and dates |
+| 📊 Dashboard Statistics | Task overview and productivity statistics |
+| 🌍 Internationalization | English and Persian language support |
+| 📱 Responsive UI | Bootstrap 5 responsive interface |
+| 🔌 REST API | API powered by Django REST Framework |
+| 🔑 JWT Authentication | Secure token-based API authentication |
+| 📘 Swagger Documentation | OpenAPI API documentation |
+| 🧪 100% Test Coverage | Comprehensive automated testing |
+| ⚡ CI/CD Pipeline | GitHub Actions automated workflow |
+| 🐳 Docker Support | Containerized development and deployment |
+| ☁️ Cloud Deployment | Production deployment with Railway |
 
 ---
 
-## 🛠️ Technology Stack
+# 🛠️ Technology Stack
 
 | Category | Technologies |
-| :--- | :--- |
-| **Backend** | Python 3.10+, Django 5.1+, django-crispy-forms, crispy-bootstrap5 |
-| **Frontend** | Bootstrap 5, HTML5, CSS3, Font Awesome |
-| **Database** | SQLite (development), PostgreSQL (production-ready) |
-| **Testing** | pytest, pytest-django, pytest-cov, coverage.py |
-| **CI/CD** | GitHub Actions, Codecov |
-| **Code Quality** | Black, Ruff, MyPy, Pre-commit |
-| **Containerization** | Docker, Docker Compose |
-| **OS** | Arch Linux (development), Any Linux / macOS / Windows (runtime) |
+|---|---|
+| Backend | Python 3.10+, Django 6.0 |
+| API | Django REST Framework, Simple JWT |
+| API Documentation | drf-spectacular / OpenAPI |
+| Frontend | HTML5, CSS3, Bootstrap 5, Font Awesome |
+| Database | SQLite (development), PostgreSQL ready |
+| Deployment | Railway, Gunicorn |
+| Static Files | WhiteNoise |
+| Testing | pytest, pytest-django, pytest-cov |
+| CI/CD | GitHub Actions, Codecov |
+| Code Quality | Black, Ruff, MyPy, Pre-commit |
+| Containerization | Docker, Docker Compose |
+| Development OS | Arch Linux |
 
 ---
 
-## 🚀 Installation & Usage
+# 🏗️ Production Architecture
 
-### Option 1: Using Docker (Recommended)
+```
+
+User
+|
+v
+Railway
+|
+v
+Gunicorn
+|
+v
+Django Application
+|
++---- Django Templates
+|
++---- Django REST API
+|
++---- JWT Authentication
+|
++---- SQLite/PostgreSQL Database
+|
++---- WhiteNoise Static Files
+
+````
+
+---
+
+# 🚀 Installation & Usage
+
+## Option 1: Docker
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/mohammad-hussein-dev/django-task-manager.git
+
 cd django-task-manager
 
-# 2. Start the containers
 docker-compose up -d
 
-# 3. Run database migrations
 docker-compose exec web python manage.py migrate
 
-# 4. (Optional) Create a superuser
 docker-compose exec web python manage.py createsuperuser
+````
 
-# 5. Access the application
-open http://localhost:8000
+Open:
+
 ```
-
-### Option 2: Manual Setup (Local)
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/mohammad-hussein-dev/django-task-manager.git
-cd django-task-manager
-
-# 2. Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Run database migrations
-python manage.py migrate
-
-# 5. (Optional) Create a superuser
-python manage.py createsuperuser
-
-# 6. Run the development server
-python manage.py runserver
-
-# 7. Access the application
-open http://127.0.0.1:8000
+http://localhost:8000
 ```
 
 ---
 
-## 🧪 Testing
+## Option 2: Manual Setup
 
-The project uses **pytest** with **~98% test coverage**.
+Clone repository:
 
-### Run all tests
+```bash
+git clone https://github.com/mohammad-hussein-dev/django-task-manager.git
+
+cd django-task-manager
+```
+
+Create virtual environment:
+
+```bash
+python -m venv .venv
+
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run migrations:
+
+```bash
+python manage.py migrate
+```
+
+Create admin user:
+
+```bash
+python manage.py createsuperuser
+```
+
+Run server:
+
+```bash
+python manage.py runserver
+```
+
+---
+
+# 🔐 Environment Variables
+
+Production settings use environment variables.
+
+Example:
+
+```env
+DJANGO_SECRET_KEY=your-secret-key
+
+DJANGO_DEBUG=False
+
+DJANGO_ALLOWED_HOSTS=your-domain.com
+
+DATABASE_URL=postgresql://user:password@host/database
+```
+
+---
+
+# 📘 API Documentation
+
+The project includes REST API support.
+
+Technologies:
+
+* Django REST Framework
+* Simple JWT
+* drf-spectacular
+
+Available documentation:
+
+```
+/api/schema/
+/api/docs/
+```
+
+Authentication:
+
+```
+JWT Access Token
+JWT Refresh Token
+```
+
+---
+
+# 🧪 Testing
+
+The project uses pytest.
+
+Current coverage:
+
+```
+100%
+```
+
+Run tests:
 
 ```bash
 pytest
 ```
 
-### Run tests with coverage report
+Coverage report:
 
 ```bash
-pytest --cov=accounts --cov=tasks --cov=task_manager --cov-report=term --cov-report=html
+pytest \
+--cov=accounts \
+--cov=tasks \
+--cov=task_manager \
+--cov-report=html
 ```
 
-Open `htmlcov/index.html` in your browser for detailed coverage breakdown.
+Open:
 
-### Test coverage badge
-
-[![codecov](https://codecov.io/gh/mohammad-hussein-dev/django-task-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/mohammad-hussein-dev/django-task-manager)
+```
+htmlcov/index.html
+```
 
 ---
 
-## 📁 Project Structure
+# 📁 Project Structure
 
 ```
 django-task-manager/
-├── accounts/                      # User authentication app
-│   ├── migrations/
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
+
+├── accounts/
 │   ├── models.py
-│   ├── tests.py
+│   ├── views.py
 │   ├── urls.py
-│   └── views.py
-├── tasks/                         # Task management app
-│   ├── migrations/
-│   ├── __init__.py
-│   ├── admin.py                   # Admin interface with bulk actions and color-coded status
-│   ├── apps.py
-│   ├── forms.py                   # TaskForm with dynamic category handling
-│   ├── models.py                  # Task and Category models with relationships
-│   ├── tests.py
-│   ├── urls.py
-│   └── views.py                   # Class-based views with filtering and pagination
-├── task_manager/                  # Django project settings
-│   ├── __init__.py
-│   ├── asgi.py
+│   └── tests.py
+
+├── tasks/
+│   ├── models.py
+│   ├── forms.py
+│   ├── views.py
+│   ├── admin.py
+│   └── tests.py
+
+├── api/
+│   ├── serializers.py
+│   ├── views.py
+│   └── urls.py
+
+├── task_manager/
 │   ├── settings.py
 │   ├── urls.py
+│   ├── asgi.py
 │   └── wsgi.py
+
+├── templates/
+
 ├── static/
-│   └── css/
-│       └── style.css
-├── templates/                     # Global templates
-│   ├── base.html
-│   ├── accounts/
-│   │   ├── login.html
-│   │   └── register.html
-│   └── tasks/
-│       ├── task_list.html
-│       ├── task_detail.html
-│       ├── task_form.html
-│       └── task_confirm_delete.html
-├── tests/                         # Additional test files
-│   ├── __init__.py
-│   ├── test_admin_actions.py
-│   ├── test_admin_coverage.py
-│   ├── test_admin_final.py
-│   ├── test_forms_coverage.py
-│   ├── test_forms_final.py
-│   ├── test_forms_final_coverage.py
-│   ├── test_forms_line94.py
-│   ├── test_forms_line94_final.py
-│   ├── test_forms_missing.py
-│   ├── test_models_coverage.py
-│   ├── test_models_final.py
-│   ├── test_views_coverage.py
-│   ├── test_views_final.py
-│   ├── test_views_line219.py
-│   ├── test_views_priority_search.py
-│   └── test_views_search_missing.py
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── .coveragerc
-├── .pre-commit-config.yaml
-├── .gitignore
-├── docker-compose.yml
+
+├── tests/
+
 ├── Dockerfile
-├── LICENSE
-├── manage.py
-├── pyproject.toml
+
+├── docker-compose.yml
+
 ├── requirements.txt
+
+├── pyproject.toml
+
 └── README.md
 ```
 
 ---
 
-## 🛠️ Development Workflow
+# 🛠️ Development Workflow
 
-### Branching Strategy
+## Branch Strategy
 
-| Branch | Purpose |
-| :--- | :--- |
-| `main` | Production-ready code |
-| `develop` | Integration branch |
-| `feature/*` | New features |
-| `fix/*` | Bug fixes |
-| `hotfix/*` | Critical production fixes |
+| Branch    | Purpose            |
+| --------- | ------------------ |
+| main      | Production branch  |
+| develop   | Integration branch |
+| feature/* | New features       |
+| fix/*     | Bug fixes          |
+| hotfix/*  | Emergency fixes    |
 
-### Commit Convention
+---
 
-Following [Conventional Commits](https://www.conventionalcommits.org/):
+## Commit Convention
+
+Following Conventional Commits:
 
 ```bash
-feat(tasks): add deadline filtering
-fix(templates): resolve nested with block
-refactor(views): simplify queryset
-docs(readme): update installation guide
-style(css): improve responsive layout
-test(forms): add validation tests
-chore(deps): update Django to 5.1.3
+feat(tasks): add filtering system
+
+fix(api): resolve authentication issue
+
+refactor(settings): improve production config
+
+docs(readme): update documentation
+
+test(tasks): add coverage tests
 ```
 
-### Code Quality Tools
+---
 
-| Tool | Purpose |
-| :--- | :--- |
-| **Black** | Code formatting |
-| **Ruff** | Linting & import sorting |
-| **MyPy** | Static type checking |
-| **Pre-commit** | Automated checks before commits |
+# Code Quality Tools
 
-**Setup pre-commit:**
+| Tool       | Purpose          |
+| ---------- | ---------------- |
+| Black      | Code formatting  |
+| Ruff       | Linting          |
+| MyPy       | Type checking    |
+| Pre-commit | Automated checks |
+
+Install:
+
 ```bash
 pre-commit install
+```
+
+Run:
+
+```bash
 pre-commit run --all-files
 ```
 
 ---
 
-## 🤝 Contributing
+# 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
+Contributions are welcome.
 
-1. **Fork** the repository
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Commit your changes**: `git commit -m 'feat: add amazing feature'`
-4. **Push to the branch**: `git push origin feature/amazing-feature`
-5. **Open a Pull Request** against the `main` branch
+Steps:
 
-**Before submitting a PR, ensure:**
-- ✅ All tests pass (`pytest`)
-- ✅ Code is formatted (`black .`)
-- ✅ Linting passes (`ruff check .`)
-- ✅ No commented-out code or debug prints
-- ✅ New features include tests
-- ✅ Documentation is updated
+1. Fork repository
+2. Create feature branch
+3. Commit changes
+4. Push branch
+5. Open Pull Request
 
----
+Before submitting:
 
-## 📄 License
-
-Distributed under the **MIT License**. See the [LICENSE](LICENSE) file for more information.
+* ✅ Tests pass
+* ✅ Code formatted
+* ✅ Lint passes
+* ✅ Documentation updated
 
 ---
 
-## 👨‍💻 Author
+# 📄 License
+
+Distributed under the MIT License.
+
+See:
+
+```
+LICENSE
+```
+
+---
+
+# 👨‍💻 Author
 
 **Mohammad Hussein**
-- 🌐 GitHub: [@mohammad-hussein-dev](https://github.com/mohammad-hussein-dev)
-- 📧 Email: [king.mohamd.09876@gmail.com](mailto:king.mohamd.09876@gmail.com)
-- 💬 Telegram: [@mohammad_hussein_dev](https://t.me/mohammad_hussein_dev)
 
-> *"I don't just write code — I simulate the universe."*
+GitHub:
+
+[https://github.com/mohammad-hussein-dev](https://github.com/mohammad-hussein-dev)
+
+Telegram:
+
+[https://t.me/mohammad_hussein_dev](https://t.me/mohammad_hussein_dev)
+
+Email:
+
+[king.mohamd.09876@gmail.com](mailto:king.mohamd.09876@gmail.com)
+
+> "I don't just write code — I simulate the universe."
 
 ---
 
-## ⭐ Support the Project
+# ⭐ Support the Project
 
-If you found this project helpful, please consider giving it a **star** on GitHub! ⭐
-It helps others discover it and motivates further development.
+If you find this project useful, consider giving it a star ⭐
+
+It helps others discover the project.
 
 ---
 
-**Built with 🐧💻 in Arch Linux**
+Built with 🐧💻 in Arch Linux
