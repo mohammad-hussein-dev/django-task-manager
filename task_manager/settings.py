@@ -3,6 +3,7 @@ Django settings for task_manager project.
 """
 
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -11,18 +12,41 @@ from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# ============================================================
+# Core Security
+# ============================================================
+
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
-    "NR494t_hs4H0cgskhaMxNvTIhcgW0s7K3ZREdMfgwK9HEVAxai3pwrORcpt7YixczdTk101IGvbmvLabsXgTQQ",
+    "dev-only-secret-key-change-this",
 )
+
+
 DEBUG = (
     os.environ.get(
         "DJANGO_DEBUG",
-        "True",
+        "False",
     ).lower()
     == "true"
 )
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
+
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS",
+    "localhost,127.0.0.1",
+).split(",")
+
+
+# Railway fallback
+ALLOWED_HOSTS += [
+    "web-production-e9601c.up.railway.app",
+]
+
+
+# ============================================================
+# Applications
+# ============================================================
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -41,6 +65,11 @@ INSTALLED_APPS = [
     "api",
 ]
 
+
+# ============================================================
+# Middleware
+# ============================================================
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -53,12 +82,20 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
 ROOT_URLCONF = "task_manager.urls"
+
+
+# ============================================================
+# Templates
+# ============================================================
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [
+            BASE_DIR / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -75,7 +112,13 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = "task_manager.wsgi.application"
+
+
+# ============================================================
+# Database
+# ============================================================
 
 DATABASES = {
     "default": dj_database_url.config(
@@ -83,6 +126,11 @@ DATABASES = {
         conn_max_age=600,
     )
 }
+
+
+# ============================================================
+# Password Validation
+# ============================================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -93,38 +141,74 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+
+# ============================================================
+# Localization
+# ============================================================
+
 LANGUAGE_CODE = "en-us"
+
 TIME_ZONE = "Asia/Tehran"
+
 USE_I18N = True
+
 USE_TZ = True
+
 
 LANGUAGES = [
     ("en", _("English")),
     ("fa", _("Persian")),
 ]
-LOCALE_PATHS = [BASE_DIR / "locale"]
 
-STATIC_URL = "static/"
+
+LOCALE_PATHS = [
+    BASE_DIR / "locale",
+]
+
+
+# ============================================================
+# Static Files
+# ============================================================
+
+STATIC_URL = "/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_DIRS = [BASE_DIR / "static"]
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+
+# ============================================================
+# Crispy Forms
+# ============================================================
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+# ============================================================
+# Default
+# ============================================================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 LOGIN_REDIRECT_URL = "tasks:task_list"
+
 LOGOUT_REDIRECT_URL = "accounts:login"
+
 LOGIN_URL = "accounts:login"
 
 
-###############################################################################
+# ============================================================
 # Django REST Framework
-###############################################################################
+# ============================================================
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -136,9 +220,10 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
 }
 
-###############################################################################
-# drf-spectacular
-###############################################################################
+
+# ============================================================
+# Swagger / OpenAPI
+# ============================================================
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Django Task Manager API",
@@ -149,9 +234,9 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-###############################################################################
-# Simple JWT
-###############################################################################
+# ============================================================
+# JWT
+# ============================================================
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -162,36 +247,62 @@ SIMPLE_JWT = {
 }
 
 
-###############################################################################
+# ============================================================
 # Production Security
-###############################################################################
+# ============================================================
+
 
 RUNNING_TESTS = (
     "PYTEST_CURRENT_TEST" in os.environ
-    or "pytest" in os.path.basename(os.sys.argv[0]).lower()
-    or "test" in os.sys.argv
+    or "pytest" in os.path.basename(sys.argv[0]).lower()
+    or "test" in sys.argv
 )
+
 
 if not DEBUG and not RUNNING_TESTS:
 
     SECURE_SSL_REDIRECT = (
-        os.getenv("DJANGO_SECURE_SSL_REDIRECT", "True").lower() == "true"
+        os.getenv(
+            "DJANGO_SECURE_SSL_REDIRECT",
+            "False",
+        ).lower()
+        == "true"
     )
 
     SESSION_COOKIE_SECURE = (
-        os.getenv("DJANGO_SESSION_COOKIE_SECURE", "True").lower() == "true"
+        os.getenv(
+            "DJANGO_SESSION_COOKIE_SECURE",
+            "True",
+        ).lower()
+        == "true"
     )
 
     CSRF_COOKIE_SECURE = (
-        os.getenv("DJANGO_CSRF_COOKIE_SECURE", "True").lower() == "true"
+        os.getenv(
+            "DJANGO_CSRF_COOKIE_SECURE",
+            "True",
+        ).lower()
+        == "true"
     )
 
-    SECURE_HSTS_SECONDS = int(os.getenv("DJANGO_SECURE_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_SECONDS = int(
+        os.getenv(
+            "DJANGO_SECURE_HSTS_SECONDS",
+            "31536000",
+        )
+    )
 
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
     SECURE_HSTS_PRELOAD = True
 
-    SECURE_PROXY_SSL_HEADER = (
-        "HTTP_X_FORWARDED_PROTO",
-        "https",
-    )
+
+# Railway Proxy Support
+
+SECURE_PROXY_SSL_HEADER = (
+    "HTTP_X_FORWARDED_PROTO",
+    "https",
+)
+
+
+USE_X_FORWARDED_HOST = True
